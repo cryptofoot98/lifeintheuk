@@ -5,7 +5,6 @@ import type { Question } from "@/data/questions";
 import type { TestMode } from "@/types";
 import { cn } from "@/lib/utils";
 import { CheckCircle, XCircle, ChevronRight, ChevronLeft, Flag, Clock, BookOpen } from "lucide-react";
-import { Progress } from "@/components/ui/progress";
 
 type AnswerState = {
   selected: number[];
@@ -15,7 +14,7 @@ type AnswerState = {
 type QuizEngineProps = {
   questions: Question[];
   mode: TestMode;
-  timeLimitSeconds?: number; // default 45*60
+  timeLimitSeconds?: number;
   onComplete: (results: QuizResult) => void;
 };
 
@@ -46,16 +45,12 @@ export function QuizEngine({ questions, mode, timeLimitSeconds = 45 * 60, onComp
   const q = questions[current];
   const ans = answers[current];
 
-  // Timer
   useEffect(() => {
     if (!isTimed) {
       const id = setInterval(() => setElapsed(Math.floor((Date.now() - startTime.current) / 1000)), 1000);
       return () => clearInterval(id);
     }
-    if (timeLeft <= 0) {
-      handleFinish();
-      return;
-    }
+    if (timeLeft <= 0) { handleFinish(); return; }
     const id = setInterval(() => setTimeLeft((t) => t - 1), 1000);
     return () => clearInterval(id);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -66,10 +61,10 @@ export function QuizEngine({ questions, mode, timeLimitSeconds = 45 * 60, onComp
     setAnswers((prev) => {
       const updated = [...prev];
       const sel = updated[current].selected;
-      const multiSelect = q.correctAnswers.length > 1;
+      const multi = q.correctAnswers.length > 1;
       updated[current] = {
         ...updated[current],
-        selected: multiSelect
+        selected: multi
           ? sel.includes(idx) ? sel.filter((s) => s !== idx) : [...sel, idx]
           : sel.includes(idx) ? [] : [idx],
       };
@@ -97,10 +92,7 @@ export function QuizEngine({ questions, mode, timeLimitSeconds = 45 * 60, onComp
     const timeTaken = Math.floor((Date.now() - startTime.current) / 1000);
     const score = answers.filter((a, i) => {
       const correct = questions[i].correctAnswers;
-      return (
-        a.selected.length === correct.length &&
-        a.selected.every((s) => correct.includes(s))
-      );
+      return a.selected.length === correct.length && a.selected.every((s) => correct.includes(s));
     }).length;
     onComplete({ questions, answers, timeTaken, score });
   }, [answers, questions, onComplete]);
@@ -114,34 +106,53 @@ export function QuizEngine({ questions, mode, timeLimitSeconds = 45 * 60, onComp
 
   const answered = answers.filter((a) => a.submitted).length;
   const progressPercent = (answered / questions.length) * 100;
+  const timerWarning = isTimed && timeLeft < 300;
 
   return (
-    <div className="flex flex-col gap-6 max-w-2xl mx-auto w-full">
-      {/* Header bar */}
-      <div className="flex items-center justify-between gap-4">
-        <div className="flex items-center gap-2 text-sm text-muted-foreground">
+    <div className="flex flex-col gap-5 max-w-2xl mx-auto w-full">
+
+      {/* ── Header ─────────────────────────────────────────────────────────── */}
+      <div className="flex items-center justify-between gap-3">
+        {/* Mode / timer badge */}
+        <div
+          className={cn(
+            "flex items-center gap-1.5 px-3 py-1.5 rounded-2xl text-sm font-bold",
+            isStudy
+              ? "bg-secondary/10 text-secondary dark:text-secondary"
+              : timerWarning
+              ? "bg-primary/15 text-primary animate-pulse"
+              : "bg-muted text-muted-foreground"
+          )}
+        >
           {isStudy ? (
-            <><BookOpen className="h-4 w-4" /> Study mode</>
+            <><BookOpen className="h-3.5 w-3.5" /> Study mode</>
           ) : (
-            <><Clock className="h-4 w-4" />
-              <span className={cn(isTimed && timeLeft < 300 && "text-red-500 font-semibold")}>
-                {isTimed ? formatTime(timeLeft) : formatTime(elapsed)}
-              </span>
+            <><Clock className="h-3.5 w-3.5" />
+              <span>{isTimed ? formatTime(timeLeft) : formatTime(elapsed)}</span>
             </>
           )}
         </div>
-        <div className="text-sm font-medium">
-          {current + 1} / {questions.length}
+
+        {/* Q counter */}
+        <div className="font-extrabold text-sm tabular-nums">
+          {current + 1} <span className="text-muted-foreground font-semibold">/ {questions.length}</span>
         </div>
-        <div className="text-sm text-muted-foreground">
-          {answered} answered
+
+        {/* Answered count */}
+        <div className="text-xs font-bold text-muted-foreground bg-muted px-3 py-1.5 rounded-2xl">
+          {answered} done
         </div>
       </div>
 
-      {/* Progress bar */}
-      <Progress value={progressPercent} className="h-1.5" />
+      {/* ── Progress bar ───────────────────────────────────────────────────── */}
+      <div className="h-3 rounded-full bg-muted overflow-hidden">
+        <div
+          className="h-full rounded-full bg-primary transition-all duration-500"
+          style={{ width: `${progressPercent}%` }}
+        />
+      </div>
 
-      {/* Question nav dots */}
+      {/* ── Question nav dots ──────────────────────────────────────────────── */}
       <div className="flex flex-wrap gap-1.5">
         {questions.map((_, i) => {
           const state = isCorrect(i);
@@ -150,16 +161,16 @@ export function QuizEngine({ questions, mode, timeLimitSeconds = 45 * 60, onComp
               key={i}
               onClick={() => goTo(i)}
               className={cn(
-                "h-7 w-7 rounded text-xs font-medium transition-colors",
+                "h-8 w-8 rounded-xl text-xs font-extrabold transition-all border-2",
                 i === current
-                  ? "bg-primary text-primary-foreground"
+                  ? "bg-primary text-white border-primary shadow-md shadow-primary/30 scale-110"
                   : state === true
-                  ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-400"
+                  ? "bg-emerald-500 text-white border-emerald-500"
                   : state === false
-                  ? "bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-400"
+                  ? "bg-red-400 text-white border-red-400"
                   : answers[i].selected.length > 0
-                  ? "bg-muted text-muted-foreground border border-primary/30"
-                  : "bg-muted text-muted-foreground hover:bg-muted/80"
+                  ? "bg-muted border-primary/40 text-primary"
+                  : "bg-muted border-border text-muted-foreground hover:border-primary/30"
               )}
             >
               {i + 1}
@@ -168,23 +179,27 @@ export function QuizEngine({ questions, mode, timeLimitSeconds = 45 * 60, onComp
         })}
       </div>
 
-      {/* Question card */}
-      <div className="rounded-xl border border-border bg-card p-6 shadow-sm">
-        {q.correctAnswers.length > 1 && (
-          <div className="text-xs font-medium text-primary bg-primary/10 px-2 py-0.5 rounded-full inline-block mb-3">
-            Select {q.correctAnswers.length} answers
-          </div>
-        )}
-        <div className="text-xs text-muted-foreground mb-2">
-          Chapter {q.chapter} · {q.topic}
+      {/* ── Question card ──────────────────────────────────────────────────── */}
+      <div className="rounded-2xl border-2 border-border bg-card p-6 shadow-sm">
+        <div className="flex items-center gap-2 mb-3">
+          <span className="text-[11px] font-extrabold text-muted-foreground uppercase tracking-wide bg-muted px-2.5 py-1 rounded-full">
+            Ch. {q.chapter}
+          </span>
+          <span className="text-[11px] font-semibold text-muted-foreground">{q.topic}</span>
+          {q.correctAnswers.length > 1 && (
+            <span className="text-[11px] font-extrabold text-primary bg-primary/10 px-2.5 py-1 rounded-full ml-auto">
+              Select {q.correctAnswers.length}
+            </span>
+          )}
         </div>
-        <p className="text-base font-medium mb-5 leading-relaxed">{q.question}</p>
 
-        <div className="flex flex-col gap-2">
+        <p className="text-base font-bold leading-relaxed mb-5">{q.question}</p>
+
+        <div className="flex flex-col gap-2.5">
           {q.options.map((option, idx) => {
             const isSelected = ans.selected.includes(idx);
-            const isCorrectOption = q.correctAnswers.includes(idx);
-            const showResult = ans.submitted;
+            const isCorrectOpt = q.correctAnswers.includes(idx);
+            const shown = ans.submitted;
 
             return (
               <button
@@ -192,71 +207,74 @@ export function QuizEngine({ questions, mode, timeLimitSeconds = 45 * 60, onComp
                 onClick={() => toggleOption(idx)}
                 disabled={ans.submitted}
                 className={cn(
-                  "w-full text-left px-4 py-3 rounded-lg border text-sm transition-all",
-                  !showResult && !isSelected && "border-border bg-background hover:border-primary/50 hover:bg-primary/5",
-                  !showResult && isSelected && "border-primary bg-primary/10 text-primary font-medium",
-                  showResult && isCorrectOption && "border-emerald-500 bg-emerald-50 text-emerald-800 dark:bg-emerald-900/20 dark:text-emerald-300",
-                  showResult && isSelected && !isCorrectOption && "border-red-400 bg-red-50 text-red-800 dark:bg-red-900/20 dark:text-red-300",
-                  showResult && !isSelected && !isCorrectOption && "border-border bg-background opacity-50"
+                  "w-full text-left px-4 py-3.5 rounded-2xl border-2 text-sm font-semibold transition-all flex items-center gap-3",
+                  !shown && !isSelected && "border-border bg-background hover:border-primary/40 hover:bg-primary/5 active:scale-[0.99]",
+                  !shown && isSelected && "border-primary bg-primary/10 text-primary",
+                  shown && isCorrectOpt && "border-emerald-500 bg-emerald-50 text-emerald-800 dark:bg-emerald-900/20 dark:text-emerald-300",
+                  shown && isSelected && !isCorrectOpt && "border-red-400 bg-red-50 text-red-800 dark:bg-red-900/20 dark:text-red-300",
+                  shown && !isSelected && !isCorrectOpt && "border-border bg-background opacity-40"
                 )}
               >
-                <div className="flex items-center gap-3">
-                  <span
-                    className={cn(
-                      "h-5 w-5 rounded-full border-2 flex items-center justify-center shrink-0 text-xs font-bold",
-                      !showResult && isSelected ? "border-primary bg-primary text-primary-foreground" : "border-muted-foreground/30",
-                      showResult && isCorrectOption && "border-emerald-500 bg-emerald-500 text-white",
-                      showResult && isSelected && !isCorrectOption && "border-red-400 bg-red-400 text-white"
-                    )}
-                  >
-                    {String.fromCharCode(65 + idx)}
-                  </span>
-                  {option}
-                </div>
+                {/* Letter badge */}
+                <span
+                  className={cn(
+                    "h-7 w-7 rounded-xl border-2 flex items-center justify-center shrink-0 text-xs font-extrabold transition-all",
+                    !shown && isSelected
+                      ? "border-primary bg-primary text-white"
+                      : !shown
+                      ? "border-border/60 text-muted-foreground"
+                      : isCorrectOpt
+                      ? "border-emerald-500 bg-emerald-500 text-white"
+                      : isSelected
+                      ? "border-red-400 bg-red-400 text-white"
+                      : "border-border/60 text-muted-foreground"
+                  )}
+                >
+                  {String.fromCharCode(65 + idx)}
+                </span>
+                <span className="flex-1">{option}</span>
+                {shown && isCorrectOpt && <CheckCircle className="h-4 w-4 text-emerald-500 shrink-0" />}
+                {shown && isSelected && !isCorrectOpt && <XCircle className="h-4 w-4 text-red-400 shrink-0" />}
               </button>
             );
           })}
         </div>
 
-        {/* Explanation (shown after submission) */}
+        {/* Explanation */}
         {ans.submitted && (
           <div
             className={cn(
-              "mt-4 p-4 rounded-lg flex gap-3 text-sm",
+              "mt-4 p-4 rounded-2xl flex gap-3 text-sm border-2 font-semibold",
               isCorrect(current)
-                ? "bg-emerald-50 text-emerald-800 dark:bg-emerald-900/20 dark:text-emerald-300"
-                : "bg-red-50 text-red-800 dark:bg-red-900/20 dark:text-red-300"
+                ? "bg-emerald-50 text-emerald-800 border-emerald-200 dark:bg-emerald-900/20 dark:text-emerald-300 dark:border-emerald-800"
+                : "bg-red-50 text-red-800 border-red-200 dark:bg-red-900/20 dark:text-red-300 dark:border-red-800"
             )}
           >
-            {isCorrect(current) ? (
-              <CheckCircle className="h-4 w-4 mt-0.5 shrink-0" />
-            ) : (
-              <XCircle className="h-4 w-4 mt-0.5 shrink-0" />
-            )}
+            <span className="text-xl shrink-0">{isCorrect(current) ? "✅" : "❌"}</span>
             <div>
-              <div className="font-medium mb-1">{isCorrect(current) ? "Correct!" : "Incorrect"}</div>
-              <div className="opacity-90">{q.explanation}</div>
+              <div className="font-extrabold mb-1">{isCorrect(current) ? "Correct! +10 XP" : "Not quite — here's why:"}</div>
+              <div className="font-medium opacity-90">{q.explanation}</div>
             </div>
           </div>
         )}
       </div>
 
-      {/* Navigation */}
-      <div className="flex items-center justify-between gap-4">
+      {/* ── Navigation ─────────────────────────────────────────────────────── */}
+      <div className="flex items-center gap-3">
         <button
           onClick={() => goTo(Math.max(0, current - 1))}
           disabled={current === 0}
-          className="flex items-center gap-1 px-4 py-2 rounded-lg border border-border text-sm font-medium hover:bg-muted transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+          className="flex items-center gap-1.5 px-4 py-3 rounded-2xl border-2 border-border text-sm font-extrabold hover:bg-muted transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
         >
-          <ChevronLeft className="h-4 w-4" /> Previous
+          <ChevronLeft className="h-4 w-4" /> Back
         </button>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 flex-1 justify-end">
           {!ans.submitted && !isStudy && (
             <button
               onClick={submitAnswer}
               disabled={ans.selected.length === 0}
-              className="px-4 py-2 rounded-lg bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+              className="btn-3d flex-1 sm:flex-none px-6 py-3 rounded-2xl bg-primary text-white text-sm font-extrabold hover:bg-primary/90 transition-colors disabled:opacity-30 disabled:cursor-not-allowed disabled:border-b-0 shadow-md shadow-primary/25"
             >
               Check answer
             </button>
@@ -264,14 +282,15 @@ export function QuizEngine({ questions, mode, timeLimitSeconds = 45 * 60, onComp
           {current === questions.length - 1 ? (
             <button
               onClick={handleFinish}
-              className="flex items-center gap-1 px-4 py-2 rounded-lg bg-emerald-600 text-white text-sm font-medium hover:bg-emerald-700 transition-colors"
+              className="btn-3d flex-1 sm:flex-none flex items-center justify-center gap-2 px-6 py-3 rounded-2xl bg-primary text-white text-sm font-extrabold hover:bg-primary/90 transition-colors shadow-md shadow-primary/25"
+              style={{ borderBottomColor: "oklch(0.35 0.22 25)" }}
             >
               <Flag className="h-4 w-4" /> Finish test
             </button>
           ) : (
             <button
               onClick={() => goTo(current + 1)}
-              className="flex items-center gap-1 px-4 py-2 rounded-lg border border-border text-sm font-medium hover:bg-muted transition-colors"
+              className="flex items-center gap-1.5 px-4 py-3 rounded-2xl border-2 border-border text-sm font-extrabold hover:bg-muted transition-colors"
             >
               Next <ChevronRight className="h-4 w-4" />
             </button>

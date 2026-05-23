@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { Crown, ArrowRight, CheckCircle } from "lucide-react";
+import { ArrowRight, CheckCircle } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
 
@@ -24,67 +24,69 @@ export default function SignupPage() {
       setError(error.message);
       setLoading(false);
     } else if (data.session) {
-      // Email confirmation disabled — user is logged in immediately
       router.push("/tests");
       router.refresh();
     } else {
-      // Email confirmation still enabled — show message
       router.push("/auth/check-email?email=" + encodeURIComponent(email));
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4 py-12 hero-grid">
-      <div className="absolute top-1/3 left-1/2 -translate-x-1/2 w-96 h-64 bg-primary/8 rounded-full blur-3xl pointer-events-none" />
+    <div className="min-h-screen flex items-center justify-center px-4 py-12 hero-dots">
+      <div className="w-full max-w-sm">
 
-      <div className="relative z-10 w-full max-w-sm">
+        {/* Logo */}
         <div className="text-center mb-8">
-          <Link href="/" className="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors mb-6">
-            <Crown className="h-5 w-5 text-primary" />
-            <span className="font-heading font-semibold">Life in the UK</span>
+          <Link href="/" className="inline-flex flex-col items-center gap-2">
+            <div className="h-14 w-14 rounded-2xl bg-primary flex items-center justify-center text-3xl shadow-xl shadow-primary/30">
+              🇬🇧
+            </div>
+            <span className="font-heading font-black text-base">Life in the UK</span>
           </Link>
-          <h1 className="font-heading text-2xl font-bold mb-1">Start your free trial</h1>
-          <p className="text-muted-foreground text-sm">One test free — no card required</p>
+          <h1 className="font-heading text-2xl font-black mt-4 mb-1">Start your free trial</h1>
+          <p className="text-muted-foreground text-sm font-semibold">One test free · no card required</p>
         </div>
 
-        <div className="bg-card border border-border rounded-2xl p-7 shadow-xl shadow-black/10">
+        {/* Card */}
+        <div className="bg-card border-2 border-border rounded-2xl p-7 shadow-xl shadow-black/8">
           <form onSubmit={handleSubmit} className="flex flex-col gap-4">
             <div>
-              <label className="text-sm font-medium block mb-1.5" htmlFor="email">Email</label>
+              <label className="text-sm font-extrabold block mb-1.5" htmlFor="email">Email</label>
               <input
                 id="email" type="email" required value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full rounded-xl border border-border bg-background px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all"
+                className="w-full rounded-2xl border-2 border-border bg-background px-4 py-3 text-sm font-semibold focus:outline-none focus:border-primary transition-all"
                 placeholder="you@example.com"
               />
             </div>
             <div>
-              <label className="text-sm font-medium block mb-1.5" htmlFor="password">Password</label>
+              <label className="text-sm font-extrabold block mb-1.5" htmlFor="password">Password</label>
               <input
                 id="password" type="password" required minLength={8} value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full rounded-xl border border-border bg-background px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all"
+                className="w-full rounded-2xl border-2 border-border bg-background px-4 py-3 text-sm font-semibold focus:outline-none focus:border-primary transition-all"
                 placeholder="At least 8 characters"
               />
             </div>
 
             {error && (
-              <div className="text-sm text-destructive bg-destructive/10 px-3.5 py-2.5 rounded-xl">
+              <div className="text-sm font-semibold text-destructive bg-destructive/10 px-4 py-3 rounded-2xl border-2 border-destructive/20">
                 {error}
               </div>
             )}
 
             <button
               type="submit" disabled={loading}
-              className="w-full bg-primary text-primary-foreground py-2.5 rounded-xl font-semibold text-sm hover:bg-primary/90 transition-all shadow-md shadow-primary/20 disabled:opacity-60 flex items-center justify-center gap-2 mt-1"
+              className="btn-3d w-full bg-primary text-white py-3 rounded-2xl font-extrabold text-sm hover:bg-primary/90 transition-colors shadow-md shadow-primary/25 disabled:opacity-60 flex items-center justify-center gap-2 mt-1"
             >
               {loading ? "Creating account…" : (<>Create free account <ArrowRight className="h-4 w-4" /></>)}
             </button>
           </form>
 
-          <div className="mt-5 pt-5 border-t border-border flex flex-col gap-2">
+          {/* Trust signals */}
+          <div className="mt-5 pt-5 border-t-2 border-border flex flex-col gap-2">
             {["One test completely free", "Lifetime unlock from £19", "No subscription ever"].map((t) => (
-              <div key={t} className="flex items-center gap-2 text-xs text-muted-foreground">
+              <div key={t} className="flex items-center gap-2 text-xs text-muted-foreground font-semibold">
                 <CheckCircle className="h-3.5 w-3.5 text-primary shrink-0" />
                 {t}
               </div>
@@ -92,9 +94,9 @@ export default function SignupPage() {
           </div>
         </div>
 
-        <p className="text-center text-sm text-muted-foreground mt-5">
+        <p className="text-center text-sm text-muted-foreground mt-5 font-semibold">
           Already have an account?{" "}
-          <Link href="/auth/login" className="text-primary font-medium hover:underline underline-offset-2">
+          <Link href="/auth/login" className="text-primary font-extrabold hover:underline underline-offset-2">
             Sign in →
           </Link>
         </p>
