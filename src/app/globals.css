@@ -10,9 +10,6 @@
   --font-sans: var(--font-sans);
   --font-mono: var(--font-geist-mono);
   --font-heading: var(--font-heading);
-  --color-gold: var(--gold);
-  --color-gold-muted: var(--gold-muted);
-  --color-navy: var(--navy);
   --color-ring: var(--ring);
   --color-input: var(--input);
   --color-border: var(--border);
@@ -34,58 +31,52 @@
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) * 1.4);
   --radius-2xl: calc(var(--radius) * 1.8);
-  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-3xl: calc(var(--radius) * 2.5);
 }
 
-/* ── Light mode — Cream / Navy / Gold ─────────────────────────────────────── */
+/* ── Light mode — White / British Red / British Blue ─────────────────── */
 :root {
-  --background: oklch(0.985 0.006 85);        /* warm cream */
-  --foreground: oklch(0.12 0.02 260);         /* deep navy text */
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.12 0.02 260);
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.15 0.05 265);
+  --card: oklch(0.975 0.012 240);
+  --card-foreground: oklch(0.15 0.05 265);
   --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.12 0.02 260);
-  --primary: oklch(0.58 0.12 75);             /* warm gold */
-  --primary-foreground: oklch(0.10 0.03 265); /* navy on gold */
-  --secondary: oklch(0.94 0.01 85);
-  --secondary-foreground: oklch(0.20 0.04 260);
-  --muted: oklch(0.93 0.008 80);
-  --muted-foreground: oklch(0.45 0.03 260);
-  --accent: oklch(0.93 0.008 80);
-  --accent-foreground: oklch(0.20 0.04 260);
+  --popover-foreground: oklch(0.15 0.05 265);
+  --primary: oklch(0.47 0.22 25);          /* British Red #C8102E */
+  --primary-foreground: oklch(1 0 0);
+  --secondary: oklch(0.19 0.13 264);       /* British Blue #012169 */
+  --secondary-foreground: oklch(1 0 0);
+  --muted: oklch(0.94 0.01 240);
+  --muted-foreground: oklch(0.48 0.04 255);
+  --accent: oklch(0.93 0.02 240);
+  --accent-foreground: oklch(0.15 0.05 265);
   --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.88 0.01 80);
-  --input: oklch(0.88 0.01 80);
-  --ring: oklch(0.58 0.12 75);
-  --radius: 0.75rem;
-  --gold: oklch(0.58 0.12 75);
-  --gold-muted: oklch(0.58 0.12 75 / 15%);
-  --navy: oklch(0.15 0.05 265);
+  --border: oklch(0.88 0.02 240);
+  --input: oklch(0.88 0.02 240);
+  --ring: oklch(0.47 0.22 25);
+  --radius: 0.875rem;
 }
 
-/* ── Dark mode — Deep Navy / Gold ─────────────────────────────────────────── */
+/* ── Dark mode — Deep Navy / Bright Red / White ───────────────────────── */
 .dark {
-  --background: oklch(0.115 0.03 265);        /* #0B1628 deep navy */
-  --foreground: oklch(0.96 0.008 85);         /* warm white */
-  --card: oklch(0.155 0.035 265);             /* slightly lighter navy */
-  --card-foreground: oklch(0.96 0.008 85);
-  --popover: oklch(0.155 0.035 265);
-  --popover-foreground: oklch(0.96 0.008 85);
-  --primary: oklch(0.72 0.13 78);             /* bright gold */
-  --primary-foreground: oklch(0.10 0.03 265); /* navy on gold */
-  --secondary: oklch(0.18 0.04 265);
-  --secondary-foreground: oklch(0.96 0.008 85);
-  --muted: oklch(0.19 0.035 265);
-  --muted-foreground: oklch(0.62 0.02 255);
-  --accent: oklch(0.20 0.04 265);
-  --accent-foreground: oklch(0.96 0.008 85);
+  --background: oklch(0.13 0.04 265);
+  --foreground: oklch(0.97 0.005 80);
+  --card: oklch(0.18 0.05 265);
+  --card-foreground: oklch(0.97 0.005 80);
+  --popover: oklch(0.18 0.05 265);
+  --popover-foreground: oklch(0.97 0.005 80);
+  --primary: oklch(0.56 0.23 25);
+  --primary-foreground: oklch(1 0 0);
+  --secondary: oklch(0.27 0.14 264);
+  --secondary-foreground: oklch(1 0 0);
+  --muted: oklch(0.21 0.05 265);
+  --muted-foreground: oklch(0.62 0.03 255);
+  --accent: oklch(0.23 0.05 265);
+  --accent-foreground: oklch(0.97 0.005 80);
   --destructive: oklch(0.65 0.22 25);
-  --border: oklch(1 0 0 / 8%);
-  --input: oklch(1 0 0 / 10%);
-  --ring: oklch(0.72 0.13 78);
-  --gold: oklch(0.72 0.13 78);
-  --gold-muted: oklch(0.72 0.13 78 / 12%);
-  --navy: oklch(0.115 0.03 265);
+  --border: oklch(1 0 0 / 10%);
+  --input: oklch(1 0 0 / 12%);
+  --ring: oklch(0.56 0.23 25);
 }
 
 @layer base {
@@ -100,7 +91,7 @@
   }
 }
 
-/* ── Scroll animation helpers ─────────────────────────────────────────────── */
+/* ── Animations ─────────────────────────────────────────────────────────── */
 @keyframes fade-up {
   from { opacity: 0; transform: translateY(32px); }
   to   { opacity: 1; transform: translateY(0); }
@@ -113,31 +104,44 @@
   from { opacity: 0; transform: translateX(32px); }
   to   { opacity: 1; transform: translateX(0); }
 }
-
-/* Hero shimmer on gold text */
+@keyframes float {
+  0%, 100% { transform: translateY(0px) rotate(1.5deg); }
+  50%       { transform: translateY(-14px) rotate(1.5deg); }
+}
 @keyframes shimmer {
   0%   { background-position: -200% center; }
   100% { background-position:  200% center; }
 }
-.gold-shimmer {
-  background: linear-gradient(
-    105deg,
-    oklch(0.72 0.13 78) 0%,
-    oklch(0.88 0.15 85) 40%,
-    oklch(0.72 0.13 78) 60%,
-    oklch(0.65 0.11 72) 100%
-  );
-  background-size: 200% auto;
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  animation: shimmer 4s linear infinite;
+
+/* Phone mockup floating */
+.phone-float {
+  animation: float 4.5s ease-in-out infinite;
+  will-change: transform;
 }
 
-/* Subtle grid pattern for hero */
-.hero-grid {
+/* Duolingo-style 3D button press */
+.btn-3d {
+  border-bottom: 4px solid oklch(0.35 0.22 25);
+  transition: all 0.1s ease;
+}
+.btn-3d:active {
+  border-bottom-width: 1px;
+  transform: translateY(2px);
+}
+
+/* Hero dot background */
+.hero-dots {
+  background-image: radial-gradient(
+    oklch(0.47 0.22 25 / 8%) 1.5px,
+    transparent 1.5px
+  );
+  background-size: 24px 24px;
+}
+
+/* Subtle grid for auth pages */
+.app-grid {
   background-image:
-    linear-gradient(oklch(1 0 0 / 3%) 1px, transparent 1px),
-    linear-gradient(90deg, oklch(1 0 0 / 3%) 1px, transparent 1px);
-  background-size: 48px 48px;
+    linear-gradient(oklch(0.47 0.22 25 / 4%) 1px, transparent 1px),
+    linear-gradient(90deg, oklch(0.47 0.22 25 / 4%) 1px, transparent 1px);
+  background-size: 40px 40px;
 }

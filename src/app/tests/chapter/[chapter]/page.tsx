@@ -1,7 +1,7 @@
 "use client";
 
 import { notFound } from "next/navigation";
-import { Nav } from "@/components/Nav";
+import { AppNav } from "@/components/AppNav";
 import { use, useState } from "react";
 import { QuizEngine, type QuizResult } from "@/components/quiz/QuizEngine";
 import { ResultsScreen } from "@/components/quiz/ResultsScreen";
@@ -27,9 +27,9 @@ export default function ChapterTestPage({ params }: Props) {
   };
 
   return (
-    <div className="flex flex-col min-h-screen">
-      <Nav />
-      <main className="flex-1 mx-auto max-w-3xl w-full px-4 py-8">
+    <div className="flex flex-col min-h-screen pb-20 md:pb-0">
+      <AppNav />
+      <main className="flex-1 mx-auto max-w-3xl w-full px-4 py-6">
         <div className="mb-6">
           <div className="text-xs text-muted-foreground mb-1">Chapter {chapterNum}</div>
           <h1 className="text-xl font-bold">{CHAPTERS[chapterNum]}</h1>

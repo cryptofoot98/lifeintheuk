@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Nav } from "@/components/Nav";
+import { AppNav } from "@/components/AppNav";
 import { CHAPTERS, getQuestionsByChapter } from "@/data/questions";
 import { BookOpen, ChevronRight } from "lucide-react";
 
@@ -13,9 +13,9 @@ const chapterSummaries: Record<number, string> = {
 
 export default function StudyPage() {
   return (
-    <div className="flex flex-col min-h-screen">
-      <Nav />
-      <main className="flex-1 mx-auto max-w-4xl w-full px-4 py-10">
+    <div className="flex flex-col min-h-screen pb-20 md:pb-0">
+      <AppNav />
+      <main className="flex-1 mx-auto max-w-4xl w-full px-4 py-6">
         <div className="flex items-center gap-3 mb-8">
           <BookOpen className="h-6 w-6 text-primary" />
           <div>

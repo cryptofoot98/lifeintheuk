@@ -1,21 +1,12 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
 import { useTheme } from "next-themes";
-import { BookOpen, BarChart2, Target, Layers, Sun, Moon, Crown } from "lucide-react";
+import { Sun, Moon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useEffect, useState } from "react";
 
-const links = [
-  { href: "/tests", label: "Tests", icon: Layers },
-  { href: "/study", label: "Study", icon: BookOpen },
-  { href: "/weak-areas", label: "Weak Areas", icon: Target },
-  { href: "/progress", label: "Progress", icon: BarChart2 },
-];
-
 export function Nav() {
-  const pathname = usePathname();
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
   const [scrolled, setScrolled] = useState(false);
@@ -32,41 +23,27 @@ export function Nav() {
       className={cn(
         "fixed top-0 left-0 right-0 z-50 transition-all duration-300",
         scrolled
-          ? "bg-background/90 backdrop-blur-md border-b border-border/50 shadow-sm"
+          ? "bg-background/95 backdrop-blur-md border-b-2 border-border shadow-sm"
           : "bg-transparent"
       )}
     >
-      <div className="mx-auto max-w-6xl px-4 flex h-16 items-center gap-6">
-        <Link href="/" className="flex items-center gap-2 shrink-0 group">
-          <Crown className="h-5 w-5 text-primary group-hover:scale-110 transition-transform" />
-          <span className="font-heading font-bold text-base tracking-tight hidden sm:inline">
+      <div className="mx-auto max-w-6xl px-4 flex h-16 items-center justify-between">
+        {/* Logo */}
+        <Link href="/" className="flex items-center gap-2.5 shrink-0 group">
+          <div className="h-8 w-8 rounded-xl bg-primary flex items-center justify-center text-white font-black text-sm shadow-md shadow-primary/30 group-hover:scale-105 transition-transform">
+            🇬🇧
+          </div>
+          <span className="font-heading font-extrabold text-base tracking-tight hidden sm:inline">
             Life in the UK
           </span>
         </Link>
 
-        <nav className="flex items-center gap-1 flex-1">
-          {links.map(({ href, label, icon: Icon }) => (
-            <Link
-              key={href}
-              href={href}
-              className={cn(
-                "flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium transition-all",
-                pathname === href
-                  ? "bg-primary/15 text-primary"
-                  : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
-              )}
-            >
-              <Icon className="h-3.5 w-3.5" />
-              <span className="hidden md:inline">{label}</span>
-            </Link>
-          ))}
-        </nav>
-
-        <div className="flex items-center gap-2">
+        {/* Right actions */}
+        <div className="flex items-center gap-2.5">
           {mounted && (
             <button
               onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-              className="h-9 w-9 flex items-center justify-center rounded-lg border border-border/50 text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-all"
+              className="h-9 w-9 flex items-center justify-center rounded-xl border-2 border-border text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-all"
               aria-label="Toggle theme"
             >
               {theme === "dark" ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
@@ -74,13 +51,13 @@ export function Nav() {
           )}
           <Link
             href="/auth/login"
-            className="text-sm text-muted-foreground hover:text-foreground transition-colors px-3 py-1.5"
+            className="text-sm text-muted-foreground hover:text-foreground transition-colors px-4 py-2 font-bold"
           >
             Sign in
           </Link>
           <Link
             href="/auth/signup"
-            className="text-sm bg-primary text-primary-foreground px-4 py-1.5 rounded-lg font-semibold hover:bg-primary/90 transition-all shadow-sm"
+            className="btn-3d text-sm bg-primary text-white px-5 py-2.5 rounded-2xl font-extrabold hover:bg-primary/90 transition-colors shadow-md shadow-primary/25"
           >
             Get started
           </Link>

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Nav } from "@/components/Nav";
+import { AppNav } from "@/components/AppNav";
 import { BarChart2, CheckCircle, XCircle, TrendingUp, Lock } from "lucide-react";
 import Link from "next/link";
 
@@ -40,9 +40,9 @@ export default function ProgressPage() {
   const passed = attempts.filter((a) => a.passed).length;
 
   return (
-    <div className="flex flex-col min-h-screen">
-      <Nav />
-      <main className="flex-1 mx-auto max-w-4xl w-full px-4 py-10">
+    <div className="flex flex-col min-h-screen pb-20 md:pb-0">
+      <AppNav />
+      <main className="flex-1 mx-auto max-w-4xl w-full px-4 py-6">
         <div className="flex items-center gap-3 mb-8">
           <BarChart2 className="h-6 w-6 text-primary" />
           <div>

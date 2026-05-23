@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Nav } from "@/components/Nav";
+import { AppNav } from "@/components/AppNav";
 import { CHAPTERS } from "@/data/questions";
 import { Clock, BookOpen, Layers } from "lucide-react";
 
@@ -7,9 +7,9 @@ const PRACTICE_TESTS = Array.from({ length: 40 }, (_, i) => i + 1);
 
 export default function TestsPage() {
   return (
-    <div className="flex flex-col min-h-screen">
-      <Nav />
-      <main className="flex-1 mx-auto max-w-5xl w-full px-4 py-10">
+    <div className="flex flex-col min-h-screen pb-20 md:pb-0">
+      <AppNav />
+      <main className="flex-1 mx-auto max-w-5xl w-full px-4 py-6">
         <h1 className="text-2xl font-bold mb-1">Practice Tests</h1>
         <p className="text-muted-foreground mb-8">
           Each test has 24 questions drawn from all chapters. The real exam requires 75% to pass.
