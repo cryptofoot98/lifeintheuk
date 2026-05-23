@@ -6,6 +6,7 @@ import { useTheme } from "next-themes";
 import { BookOpen, BarChart2, Target, Layers, Sun, Moon, Bell, Search } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useEffect, useState, useRef } from "react";
+import { UserStatsChip } from "@/components/UserStatsChip";
 
 const mainLinks = [
   { href: "/tests",      label: "Tests",           icon: Layers,   emoji: "📝" },
@@ -70,6 +71,9 @@ export function AppNav() {
             <Search className="h-3.5 w-3.5 shrink-0" />
             <span className="text-xs">Search questions…</span>
           </div>
+
+          {/* XP + streak — right of search bar */}
+          <UserStatsChip />
 
           {/* Right icons */}
           <div className="flex items-center gap-1.5 ml-auto">

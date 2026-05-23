@@ -1,7 +1,8 @@
 import Link from "next/link";
 import { AppNav } from "@/components/AppNav";
+import { DailyGoal } from "@/components/DailyGoal";
 import { CHAPTERS } from "@/data/questions";
-import { Clock, BookOpen, Layers, Zap } from "lucide-react";
+import { BookOpen, Layers, Zap } from "lucide-react";
 
 const PRACTICE_TESTS = Array.from({ length: 40 }, (_, i) => i + 1);
 
@@ -11,7 +12,7 @@ const modes = [
     icon: Zap,
     emoji: "⚡",
     title: "Quick Quiz",
-    desc: "10 random questions, no timer",
+    desc: "10 random questions · no timer",
     accent: false,
   },
   {
@@ -39,12 +40,15 @@ export default function TestsPage() {
       <main className="flex-1 mx-auto max-w-5xl w-full px-4 py-6">
 
         {/* Page header */}
-        <div className="mb-6">
+        <div className="mb-5">
           <h1 className="font-heading text-2xl font-black">Practice Tests 📝</h1>
           <p className="text-sm text-muted-foreground font-semibold mt-1">
             24 questions per test · pass mark 75% (18/24) · real exam conditions
           </p>
         </div>
+
+        {/* Daily goal */}
+        <DailyGoal />
 
         {/* Mode selector */}
         <div className="grid sm:grid-cols-3 gap-4 mb-8">
@@ -52,11 +56,12 @@ export default function TestsPage() {
             <Link
               key={href}
               href={href}
-              className={`rounded-2xl border-2 p-5 hover:shadow-md transition-all group ${
+              className={cn(
+                "rounded-2xl border-[3px] p-5 hover:shadow-lg transition-all group card-elevated",
                 accent
-                  ? "border-primary bg-primary/5 hover:border-primary hover:bg-primary/8"
-                  : "border-border bg-card hover:border-primary/30"
-              }`}
+                  ? "border-primary bg-primary/5 hover:bg-primary/8"
+                  : "border-border bg-card hover:border-primary/50"
+              )}
             >
               <div className="text-3xl mb-3">{emoji}</div>
               <h3 className={`font-extrabold mb-1 text-sm group-hover:text-primary transition-colors ${accent ? "text-primary" : ""}`}>
@@ -74,7 +79,7 @@ export default function TestsPage() {
             <Link
               key={num}
               href={`/tests/chapter/${num}`}
-              className="rounded-2xl border-2 border-border bg-card p-4 hover:border-primary/40 hover:shadow-md transition-all flex gap-3 items-start group"
+              className="rounded-2xl border-2 border-border bg-card p-4 hover:border-primary/50 hover:shadow-md transition-all flex gap-3 items-start group card-elevated"
             >
               <span className="h-9 w-9 rounded-2xl bg-primary text-white text-xs font-black flex items-center justify-center shrink-0 shadow-sm shadow-primary/25 group-hover:scale-105 transition-transform">
                 {num}
@@ -94,7 +99,7 @@ export default function TestsPage() {
             <Link
               key={n}
               href={`/tests/${n}`}
-              className="flex items-center justify-center h-11 rounded-2xl border-2 border-border bg-card text-sm font-extrabold hover:border-primary hover:text-primary hover:bg-primary/5 transition-all hover:scale-105"
+              className="flex items-center justify-center h-11 rounded-2xl border-2 border-border bg-card text-sm font-extrabold hover:border-primary hover:text-primary hover:bg-primary/5 transition-all hover:scale-105 card-elevated"
             >
               {n}
             </Link>
@@ -103,4 +108,8 @@ export default function TestsPage() {
       </main>
     </div>
   );
+}
+
+function cn(...classes: (string | boolean | undefined)[]) {
+  return classes.filter(Boolean).join(" ");
 }

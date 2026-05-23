@@ -146,6 +146,50 @@
   transform: translateY(2px);
 }
 
+/* Quiz option card — Duolingo 3D feel */
+.option-card {
+  border-bottom-width: 4px !important;
+  transition: border-color 0.12s, background 0.12s, transform 0.08s, box-shadow 0.12s;
+}
+.option-card:active:not(:disabled) {
+  border-bottom-width: 2px !important;
+  transform: translateY(2px);
+}
+
+/* XP float-up animation */
+@keyframes xp-float {
+  0%   { opacity: 1; transform: translateY(0) scale(1); }
+  50%  { opacity: 1; transform: translateY(-20px) scale(1.15); }
+  100% { opacity: 0; transform: translateY(-40px) scale(0.9); }
+}
+.xp-float { animation: xp-float 1s ease-out forwards; pointer-events: none; }
+
+/* Correct answer card bounce */
+@keyframes correct-bounce {
+  0%   { transform: scale(1); }
+  30%  { transform: scale(1.03); }
+  60%  { transform: scale(0.99); }
+  100% { transform: scale(1); }
+}
+.correct-bounce { animation: correct-bounce 0.4s ease-out; }
+
+/* Wrong answer shake */
+@keyframes wrong-shake {
+  0%, 100% { transform: translateX(0); }
+  20%       { transform: translateX(-5px); }
+  40%       { transform: translateX(5px); }
+  60%       { transform: translateX(-3px); }
+  80%       { transform: translateX(3px); }
+}
+.wrong-shake { animation: wrong-shake 0.35s ease-out; }
+
+/* Combo badge pulse */
+@keyframes combo-pulse {
+  0%, 100% { transform: scale(1); }
+  50%       { transform: scale(1.12); }
+}
+.combo-pulse { animation: combo-pulse 0.6s ease-in-out infinite; }
+
 /* Hero dot background */
 .hero-dots {
   background-image:
