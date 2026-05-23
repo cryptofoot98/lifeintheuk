@@ -11,13 +11,14 @@ const mainLinks = [
   { href: "/tests",      label: "Tests",           icon: Layers,   emoji: "📝" },
   { href: "/progress",   label: "Progress",        icon: BarChart2, emoji: "📊" },
   { href: "/study",      label: "Study by chapter", icon: BookOpen, emoji: "📖" },
+  { href: "/materials",  label: "Study materials",  icon: BookOpen, emoji: "📚" },
 ];
 
 const tabLinks = [
   { href: "/tests",       label: "Tests",      icon: Layers,   emoji: "📝" },
   { href: "/progress",    label: "Progress",   icon: BarChart2, emoji: "📊" },
   { href: "/study",       label: "Study",      icon: BookOpen, emoji: "📖" },
-  { href: "/weak-areas",  label: "Weak Areas", icon: Target,   emoji: "🎯" },
+  { href: "/materials",   label: "Materials",  icon: BookOpen, emoji: "📚" },
 ];
 
 export function AppNav() {

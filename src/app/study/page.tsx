@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { AppNav } from "@/components/AppNav";
 import { CHAPTERS, getQuestionsByChapter } from "@/data/questions";
-import { ChevronRight } from "lucide-react";
+import { ChevronRight, BookOpen } from "lucide-react";
 
 const chapterEmojis: Record<number, string> = {
   1: "🏛️",
@@ -61,7 +61,14 @@ export default function StudyPage() {
                     </p>
                   </div>
                 </div>
-                <div className="border-t-2 border-border px-5 py-3 bg-muted/20 flex items-center">
+                <div className="border-t-2 border-border px-5 py-3 bg-muted/20 flex items-center justify-between gap-3">
+                  <Link
+                    href={`/materials/${chapterNum}`}
+                    className="flex items-center gap-1.5 text-sm font-extrabold text-muted-foreground hover:text-primary transition-colors"
+                  >
+                    <BookOpen className="h-3.5 w-3.5" />
+                    Read material
+                  </Link>
                   <Link
                     href={`/tests/chapter/${num}`}
                     className="flex items-center gap-1.5 text-sm font-extrabold text-primary hover:underline underline-offset-2"
