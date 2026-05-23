@@ -2,7 +2,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeft, ArrowRight, Clock, BookOpen } from "lucide-react";
 import { CHAPTERS, getChapter } from "@/data/materials";
-import { MaterialRenderer } from "@/components/MaterialRenderer";
+import { ChapterReader } from "@/components/ChapterReader";
 import { AppNav } from "@/components/AppNav";
 
 type Props = { params: Promise<{ chapter: string }> };
@@ -81,22 +81,8 @@ export default async function ChapterPage({ params }: Props) {
         </div>
       </div>
 
-      {/* Content sections */}
-      <div className="flex flex-col gap-6">
-        {ch.sections.map((sec, idx) => (
-          <section key={sec.id} id={sec.id} className="scroll-mt-24">
-            {/* Section header */}
-            <div className="flex items-center gap-3 mb-4">
-              <div className="h-8 w-8 rounded-xl bg-primary text-white flex items-center justify-center text-sm font-black shrink-0">
-                {idx + 1}
-              </div>
-              <h2 className="font-heading text-xl font-black">{sec.title}</h2>
-            </div>
-
-            <MaterialRenderer blocks={sec.blocks} />
-          </section>
-        ))}
-      </div>
+      {/* Content sections — tracked reading with IntersectionObserver */}
+      <ChapterReader chapter={ch.chapter} sections={ch.sections} />
 
       {/* Take test CTA */}
       <div className="mt-8 bg-primary/8 border-2 border-primary/20 rounded-2xl p-5 text-center">

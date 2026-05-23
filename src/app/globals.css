@@ -34,49 +34,56 @@
   --radius-3xl: calc(var(--radius) * 2.5);
 }
 
-/* ── Light mode — White / British Red / British Blue ─────────────────── */
+/* ── Light mode — Pearl Blue / British Red / British Blue ────────────── */
 :root {
-  --background: oklch(1 0 0);
+  --background: oklch(0.964 0.011 246);   /* blue-pearl, not plain white */
   --foreground: oklch(0.15 0.05 265);
-  --card: oklch(0.975 0.012 240);
+  --card: oklch(0.992 0.004 250);          /* near-white cards float above bg */
   --card-foreground: oklch(0.15 0.05 265);
-  --popover: oklch(1 0 0);
+  --popover: oklch(0.992 0.004 250);
   --popover-foreground: oklch(0.15 0.05 265);
   --primary: oklch(0.47 0.22 25);          /* British Red #C8102E */
   --primary-foreground: oklch(1 0 0);
   --secondary: oklch(0.19 0.13 264);       /* British Blue #012169 */
   --secondary-foreground: oklch(1 0 0);
-  --muted: oklch(0.94 0.01 240);
+  --muted: oklch(0.935 0.014 246);
   --muted-foreground: oklch(0.48 0.04 255);
-  --accent: oklch(0.93 0.02 240);
+  --accent: oklch(0.945 0.012 246);
   --accent-foreground: oklch(0.15 0.05 265);
   --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.88 0.02 240);
-  --input: oklch(0.88 0.02 240);
+  --border: oklch(0.878 0.018 246);
+  --input: oklch(0.878 0.018 246);
   --ring: oklch(0.47 0.22 25);
   --radius: 0.875rem;
+  /* Soft shadow tokens */
+  --shadow-sm:  0 1px 3px oklch(0.19 0.13 264 / 8%), 0 1px 2px oklch(0.19 0.13 264 / 6%);
+  --shadow-md:  0 4px 12px oklch(0.19 0.13 264 / 10%), 0 2px 6px oklch(0.19 0.13 264 / 7%);
+  --shadow-lg:  0 8px 28px oklch(0.19 0.13 264 / 12%), 0 4px 12px oklch(0.19 0.13 264 / 8%);
 }
 
 /* ── Dark mode — Deep Navy / Bright Red / White ───────────────────────── */
 .dark {
-  --background: oklch(0.13 0.04 265);
+  --background: oklch(0.108 0.052 265);   /* rich deep navy, not flat black */
   --foreground: oklch(0.97 0.005 80);
-  --card: oklch(0.18 0.05 265);
+  --card: oklch(0.162 0.065 265);          /* saturated navy card */
   --card-foreground: oklch(0.97 0.005 80);
-  --popover: oklch(0.18 0.05 265);
+  --popover: oklch(0.162 0.065 265);
   --popover-foreground: oklch(0.97 0.005 80);
   --primary: oklch(0.56 0.23 25);
   --primary-foreground: oklch(1 0 0);
   --secondary: oklch(0.27 0.14 264);
   --secondary-foreground: oklch(1 0 0);
-  --muted: oklch(0.21 0.05 265);
+  --muted: oklch(0.205 0.062 265);
   --muted-foreground: oklch(0.62 0.03 255);
-  --accent: oklch(0.23 0.05 265);
+  --accent: oklch(0.225 0.062 265);
   --accent-foreground: oklch(0.97 0.005 80);
   --destructive: oklch(0.65 0.22 25);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 12%);
+  --border: oklch(1 0 0 / 11%);
+  --input: oklch(1 0 0 / 13%);
   --ring: oklch(0.56 0.23 25);
+  --shadow-sm:  0 1px 3px oklch(0 0 0 / 25%), 0 1px 2px oklch(0 0 0 / 20%);
+  --shadow-md:  0 4px 12px oklch(0 0 0 / 30%), 0 2px 6px oklch(0 0 0 / 25%);
+  --shadow-lg:  0 8px 28px oklch(0 0 0 / 40%), 0 4px 12px oklch(0 0 0 / 30%);
 }
 
 @layer base {
@@ -85,6 +92,16 @@
   }
   body {
     @apply bg-background text-foreground antialiased;
+    /* Ambient mesh gradient — red top-left, blue bottom-right */
+    background-image:
+      radial-gradient(ellipse 85% 55% at 8% -8%,  oklch(0.47 0.22 25 / 7%)  0%, transparent 58%),
+      radial-gradient(ellipse 70% 55% at 92% 108%, oklch(0.19 0.13 264 / 9%) 0%, transparent 58%);
+    background-attachment: fixed;
+  }
+  .dark body {
+    background-image:
+      radial-gradient(ellipse 85% 55% at 8% -8%,  oklch(0.56 0.23 25 / 13%)  0%, transparent 58%),
+      radial-gradient(ellipse 70% 55% at 92% 108%, oklch(0.27 0.14 264 / 18%) 0%, transparent 58%);
   }
   html {
     @apply font-sans scroll-smooth;
@@ -131,11 +148,11 @@
 
 /* Hero dot background */
 .hero-dots {
-  background-image: radial-gradient(
-    oklch(0.47 0.22 25 / 8%) 1.5px,
-    transparent 1.5px
-  );
-  background-size: 24px 24px;
+  background-image:
+    radial-gradient(oklch(0.47 0.22 25 / 9%) 1.5px, transparent 1.5px),
+    radial-gradient(ellipse 85% 55% at 8% -8%,  oklch(0.47 0.22 25 / 7%)  0%, transparent 58%),
+    radial-gradient(ellipse 70% 55% at 92% 108%, oklch(0.19 0.13 264 / 9%) 0%, transparent 58%);
+  background-size: 24px 24px, auto, auto;
 }
 
 /* Subtle grid for auth pages */
@@ -144,4 +161,26 @@
     linear-gradient(oklch(0.47 0.22 25 / 4%) 1px, transparent 1px),
     linear-gradient(90deg, oklch(0.47 0.22 25 / 4%) 1px, transparent 1px);
   background-size: 40px 40px;
+}
+
+/* Elevated card — use on cards you want to "float" */
+.card-elevated {
+  box-shadow: var(--shadow-md);
+}
+
+/* Nav frosted gradient */
+.nav-glass {
+  background: linear-gradient(
+    180deg,
+    oklch(0.964 0.011 246 / 96%) 0%,
+    oklch(0.964 0.011 246 / 93%) 100%
+  );
+  backdrop-filter: blur(14px) saturate(1.4);
+}
+.dark .nav-glass {
+  background: linear-gradient(
+    180deg,
+    oklch(0.130 0.055 265 / 96%) 0%,
+    oklch(0.120 0.055 265 / 93%) 100%
+  );
 }

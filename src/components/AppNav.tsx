@@ -50,7 +50,7 @@ export function AppNav() {
     <>
       {/* ── Top header ─────────────────────────────────────────────────────── */}
       <header
-        className="fixed top-0 left-0 right-0 z-50 bg-background/95 backdrop-blur-md border-b-2 border-border overflow-hidden"
+        className="fixed top-0 left-0 right-0 z-50 nav-glass border-b-2 border-border overflow-hidden"
         style={{ transition: "height 0.3s cubic-bezier(0.4,0,0.2,1)" }}
       >
         {/* Row 1 — always visible */}
