@@ -244,19 +244,44 @@ export function QuizEngine({ questions, mode, timeLimitSeconds = 45 * 60, onComp
               onClick={() => toggleOption(idx)}
               disabled={ans.submitted}
               className={cn(
-                "option-card w-full text-left rounded-2xl border-[3px] flex items-center gap-3.5 px-4 py-3.5",
+                "option-card relative overflow-hidden w-full text-left rounded-2xl border-[3px] flex items-center gap-3.5 px-4 py-3.5",
                 "font-bold text-sm leading-snug",
                 state === "default"  && "border-border bg-card hover:border-primary/60 hover:bg-primary/4 hover:shadow-md",
-                state === "selected" && "border-primary bg-primary/8",
+                state === "selected" && "border-primary bg-card",
                 state === "correct"  && "border-emerald-500 bg-emerald-50 dark:bg-emerald-950/40 correct-bounce",
                 state === "wrong"    && "border-red-400 bg-red-50 dark:bg-red-950/40 wrong-shake",
                 state === "faded"    && "border-border/40 bg-card/60 opacity-50",
               )}
               style={{ borderBottomColor, borderBottomWidth: shown ? "3px" : undefined }}
             >
-              {/* Letter badge */}
+              {/* Union Jack watermark — appears only when selected (pre-submit) */}
+              {state === "selected" && (
+                <span className="absolute inset-0 pointer-events-none" aria-hidden="true">
+                  <svg
+                    viewBox="0 0 60 30"
+                    preserveAspectRatio="xMidYMid slice"
+                    className="w-full h-full"
+                    style={{ opacity: 0.14 }}
+                  >
+                    {/* Blue field */}
+                    <rect width="60" height="30" fill="#012169" />
+                    {/* White diagonal X (St. Andrew + St. Patrick base) */}
+                    <path d="M0 0L60 30M60 0L0 30" stroke="white" strokeWidth="8" />
+                    {/* Red diagonal X (St. Patrick, narrower) */}
+                    <path d="M0 0L60 30M60 0L0 30" stroke="#C8102E" strokeWidth="4.5" />
+                    {/* White upright cross (St. George base) */}
+                    <rect x="23" y="0" width="14" height="30" fill="white" />
+                    <rect x="0" y="11" width="60" height="8" fill="white" />
+                    {/* Red upright cross (St. George) */}
+                    <rect x="25.5" y="0" width="9" height="30" fill="#C8102E" />
+                    <rect x="0" y="13" width="60" height="4" fill="#C8102E" />
+                  </svg>
+                </span>
+              )}
+
+              {/* Content — z-10 keeps it above the SVG overlay */}
               <span className={cn(
-                "h-10 w-10 rounded-xl flex items-center justify-center shrink-0 text-sm font-extrabold border-[3px] transition-colors",
+                "relative z-10 h-10 w-10 rounded-xl flex items-center justify-center shrink-0 text-sm font-extrabold border-[3px] transition-colors",
                 state === "default"  && "border-border/70 text-muted-foreground",
                 state === "selected" && "border-primary bg-primary text-white",
                 state === "correct"  && "border-emerald-500 bg-emerald-500 text-white",
@@ -267,15 +292,15 @@ export function QuizEngine({ questions, mode, timeLimitSeconds = 45 * 60, onComp
               </span>
 
               <span className={cn(
-                "flex-1",
+                "relative z-10 flex-1",
                 state === "correct" && "text-emerald-800 dark:text-emerald-200",
                 state === "wrong"   && "text-red-800 dark:text-red-300",
               )}>
                 {option}
               </span>
 
-              {state === "correct" && <span className="text-xl shrink-0">✅</span>}
-              {state === "wrong"   && <span className="text-xl shrink-0">❌</span>}
+              {state === "correct" && <span className="relative z-10 text-xl shrink-0">✅</span>}
+              {state === "wrong"   && <span className="relative z-10 text-xl shrink-0">❌</span>}
             </button>
           );
         })}
