@@ -36,14 +36,22 @@ export function ExamClient({ questions, examId, title }: Props) {
 
     const { data: profile } = await supabase
       .from("profiles")
-      .select("has_lifetime_access, free_tests_used, is_admin")
+      .select("has_lifetime_access, is_admin")
       .eq("id", user.id)
       .single();
 
     if (!profile) { setAccess("allowed"); return; }
     if (profile.is_admin) { setAccess("allowed"); return; }
     if (profile.has_lifetime_access) { setAccess("allowed"); return; }
-    if (profile.free_tests_used < 1) { setAccess("allowed"); return; }
+
+    // 1 free real exam allowed — count completed exam attempts (test_number > 100)
+    const { data: examAttempts } = await supabase
+      .from("test_attempts")
+      .select("id")
+      .eq("user_id", user.id)
+      .gt("test_number", 100);
+
+    if ((examAttempts?.length ?? 0) < 1) { setAccess("allowed"); return; }
     setAccess("needs-unlock");
   }
 

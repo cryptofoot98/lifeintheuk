@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useRef, useState, useCallback } from "react";
-import { CheckCircle2 } from "lucide-react";
+import { CheckCircle2, Lock } from "lucide-react";
+import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import type { Section } from "@/data/materials";
 import { MaterialRenderer } from "@/components/MaterialRenderer";
@@ -14,6 +15,7 @@ type Props = {
 export function ChapterReader({ chapter, sections }: Props) {
   const [completedIds, setCompletedIds] = useState<Set<string>>(new Set());
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [locked, setLocked] = useState(false);
   const sectionRefs = useRef<Map<string, Element>>(new Map());
 
   useEffect(() => {
@@ -26,6 +28,27 @@ export function ChapterReader({ chapter, sections }: Props) {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return;
     setIsLoggedIn(true);
+
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("has_lifetime_access, is_admin")
+      .eq("id", user.id)
+      .single();
+
+    // Free users: 1 chapter allowed. Check if a DIFFERENT chapter has already been read.
+    if (!profile?.is_admin && !profile?.has_lifetime_access) {
+      const { data: allProgress } = await supabase
+        .from("material_progress")
+        .select("chapter")
+        .eq("user_id", user.id);
+
+      const readChapters = new Set((allProgress ?? []).map(r => r.chapter));
+      readChapters.delete(chapter); // current chapter doesn't count as "other"
+      if (readChapters.size >= 1) {
+        setLocked(true);
+        return;
+      }
+    }
 
     const { data } = await supabase
       .from("material_progress")
@@ -104,6 +127,24 @@ export function ChapterReader({ chapter, sections }: Props) {
   const completedCount = completedIds.size;
   const totalCount = sections.length;
   const progressPct = totalCount > 0 ? Math.round((completedCount / totalCount) * 100) : 0;
+
+  if (locked) {
+    return (
+      <div className="min-h-[40vh] flex flex-col items-center justify-center text-center px-4 py-12">
+        <div className="text-5xl mb-4">🔒</div>
+        <h2 className="font-heading text-xl font-black mb-2">Chapter locked</h2>
+        <p className="text-sm text-muted-foreground font-semibold mb-6 max-w-xs">
+          Your free plan includes 1 chapter. Unlock all 5 chapters with lifetime access.
+        </p>
+        <Link
+          href="/unlock"
+          className="btn-3d px-6 py-3 bg-primary text-white rounded-2xl font-extrabold text-sm shadow-lg shadow-primary/25"
+        >
+          Unlock — £8.90
+        </Link>
+      </div>
+    );
+  }
 
   return (
     <div>

@@ -32,17 +32,26 @@ export function TestClient({ questions, testNumber }: Props) {
       return;
     }
 
-    // Logged in — check lifetime access or free trial
+    // Logged in — check lifetime access or free tier (2 practice tests)
     const { data: profile } = await supabase
       .from("profiles")
-      .select("has_lifetime_access, free_tests_used, is_admin")
+      .select("has_lifetime_access, is_admin")
       .eq("id", user.id)
       .single();
 
     if (!profile) { setAccess("allowed"); return; }
     if (profile.is_admin) { setAccess("allowed"); return; }
     if (profile.has_lifetime_access) { setAccess("allowed"); return; }
-    if (profile.free_tests_used < 1) { setAccess("allowed"); return; }
+
+    // Count completed practice tests (1–40) from test_attempts
+    const { data: practiceAttempts } = await supabase
+      .from("test_attempts")
+      .select("id")
+      .eq("user_id", user.id)
+      .gte("test_number", 1)
+      .lte("test_number", 40);
+
+    if ((practiceAttempts?.length ?? 0) < 2) { setAccess("allowed"); return; }
     setAccess("needs-unlock");
   }
 

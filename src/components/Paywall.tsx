@@ -20,8 +20,8 @@ export function Paywall({ reason = "trial-used" }: Props) {
 
         <p className="text-muted-foreground font-semibold mb-7 leading-relaxed text-sm">
           {isGuest
-            ? "Sign up free and get one full practice test. Unlock everything for £19 — one-time, forever."
-            : "You've used your free trial. Unlock all 40 tests, study mode, weak-area tracking, and your progress dashboard for a one-time payment of £19."}
+            ? "Sign up free and get 2 practice tests, 1 real exam, and 1 study chapter. Unlock everything for £8.90 — one-time, forever."
+            : "You've used your free allowance. Unlock all 40 tests, all 10 exam sets, study mode, and your progress dashboard for a one-time payment of £8.90."}
         </p>
 
         {/* Pricing card */}
@@ -29,7 +29,7 @@ export function Paywall({ reason = "trial-used" }: Props) {
           <div className="flex items-center justify-between mb-4">
             <div>
               <div className="text-xs font-extrabold text-primary uppercase tracking-wider mb-0.5">Lifetime unlock</div>
-              <div className="font-heading text-4xl font-black">£19</div>
+              <div className="font-heading text-4xl font-black">£8.90</div>
               <div className="text-xs text-muted-foreground font-semibold">one-time · no subscription</div>
             </div>
             <span className="text-4xl">🎖️</span>
@@ -74,7 +74,7 @@ export function Paywall({ reason = "trial-used" }: Props) {
               className="btn-3d w-full flex items-center justify-center gap-2 bg-primary text-white py-3.5 rounded-2xl font-extrabold hover:bg-primary/90 transition-colors shadow-lg shadow-primary/25"
             >
               <Lock className="h-4 w-4" />
-              Unlock lifetime access — £19
+              Unlock lifetime access — £8.90
             </Link>
           )}
         </div>
