@@ -231,7 +231,7 @@ export function AppNav() {
                 </Link>
               );
             })}
-            {/* Profile tab with avatar */}
+            {/* Profile tab */}
             {(() => {
               const active = pathname === "/profile";
               return (
@@ -240,14 +240,10 @@ export function AppNav() {
                   className="flex-1 flex flex-col items-center justify-center py-2.5 gap-0.5 transition-all"
                 >
                   <div className={cn(
-                    "flex items-center justify-center h-9 w-9 rounded-xl transition-all duration-200 overflow-hidden",
-                    active ? "ring-2 ring-primary ring-offset-1 scale-105" : "bg-transparent"
+                    "flex items-center justify-center h-9 w-9 rounded-xl transition-all duration-200",
+                    active ? "bg-primary/12 scale-105" : "bg-transparent"
                   )}>
-                    {avatarUrl ? (
-                      <Image src={avatarUrl} alt="Profile" width={36} height={36} className="w-9 h-9 object-cover rounded-xl" />
-                    ) : (
-                      <span className="text-[22px] leading-none">👤</span>
-                    )}
+                    <span className="text-[22px] leading-none">👤</span>
                   </div>
                   <span className={cn(
                     "text-[10px] font-bold transition-colors",
