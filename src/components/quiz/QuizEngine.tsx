@@ -76,6 +76,7 @@ export function QuizEngine({ questions, mode, timeLimitSeconds = 45 * 60, onComp
   const startTime = useRef(
     saved && !isTimed ? Date.now() - (saved.elapsed ?? 0) * 1000 : Date.now()
   );
+  const hiddenAtRef = useRef<number | null>(null);
 
   const q = questions[current];
   const ans = answers[current];
@@ -97,13 +98,31 @@ export function QuizEngine({ questions, mode, timeLimitSeconds = 45 * 60, onComp
     return () => clearTimeout(t);
   }, [showResumedBanner]);
 
+  // Pause timed countdown when user leaves the page / switches apps
+  useEffect(() => {
+    if (!isTimed) return;
+    const handler = () => {
+      if (document.hidden) {
+        hiddenAtRef.current = Date.now();
+      } else if (hiddenAtRef.current !== null) {
+        const hiddenSecs = Math.round((Date.now() - hiddenAtRef.current) / 1000);
+        hiddenAtRef.current = null;
+        setTimeLeft(t => Math.min(t + hiddenSecs, timeLimitSeconds));
+      }
+    };
+    document.addEventListener("visibilitychange", handler);
+    return () => document.removeEventListener("visibilitychange", handler);
+  }, [isTimed, timeLimitSeconds]);
+
   useEffect(() => {
     if (!isTimed) {
       const id = setInterval(() => setElapsed(Math.floor((Date.now() - startTime.current) / 1000)), 1000);
       return () => clearInterval(id);
     }
     if (timeLeft <= 0) { handleFinish(); return; }
-    const id = setInterval(() => setTimeLeft((t) => t - 1), 1000);
+    const id = setInterval(() => {
+      if (!document.hidden) setTimeLeft((t) => t - 1);
+    }, 1000);
     return () => clearInterval(id);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isTimed, timeLeft]);
