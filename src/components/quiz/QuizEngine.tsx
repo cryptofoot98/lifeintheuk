@@ -4,7 +4,8 @@ import { useState, useEffect, useCallback, useRef } from "react";
 import type { Question } from "@/data/questions";
 import type { TestMode } from "@/types";
 import { cn } from "@/lib/utils";
-import { ChevronLeft, Clock, Flame, Flag } from "lucide-react";
+import { ChevronLeft, Clock, Flame, Flag, Sparkles, Lightbulb } from "lucide-react";
+import { useAI } from "@/lib/ai-context";
 
 type AnswerState = { selected: number[]; submitted: boolean };
 
@@ -41,6 +42,7 @@ function formatTime(seconds: number): string {
 export function QuizEngine({ questions, mode, timeLimitSeconds = 45 * 60, onComplete, sessionKey }: QuizEngineProps) {
   const isTimed = mode === "timed";
   const isStudy = mode === "study";
+  const { openAI } = useAI();
 
   // Load saved session once — fingerprint prevents restoring a random quiz after page reload
   const savedRef = useRef<SavedSession | null>((() => {
@@ -430,10 +432,34 @@ export function QuizEngine({ questions, mode, timeLimitSeconds = 45 * 60, onComp
               Continue →
             </button>
           )}
+
+          {/* AI explain button */}
+          <button
+            onClick={() => openAI("explain", {
+              question: q.question,
+              correctAnswer: q.correctAnswers.map((c) => q.options[c]).join(" / "),
+              userAnswer: ans.selected.map((s) => q.options[s]).join(" / "),
+              isCorrect: !!currentResult,
+              explanation: q.explanation,
+            })}
+            className="mt-1 w-full flex items-center justify-center gap-2 px-4 py-2 rounded-xl border-2 border-secondary/25 bg-secondary/5 text-secondary text-xs font-extrabold hover:bg-secondary/10 transition-colors"
+          >
+            <Sparkles className="h-3.5 w-3.5" />
+            Ask AI to explain this
+          </button>
         </div>
       ) : (
         /* Check button — disabled until option selected */
         <div className="flex gap-3">
+          {isStudy && (
+            <button
+              onClick={() => openAI("hint", { question: q.question, options: q.options })}
+              className="flex items-center gap-1.5 px-4 py-4 rounded-2xl border-2 border-border text-sm font-extrabold text-muted-foreground hover:text-secondary hover:border-secondary/30 hover:bg-secondary/5 transition-all shrink-0"
+              title="Get a hint from AI"
+            >
+              <Lightbulb className="h-4 w-4" />
+            </button>
+          )}
           <button
             onClick={submitAnswer}
             disabled={!canCheck}

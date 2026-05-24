@@ -4,7 +4,8 @@ import { AppNav } from "@/components/AppNav";
 import { useProgress } from "@/hooks/useProgress";
 import { CHAPTERS as MATERIAL_CHAPTERS } from "@/data/materials";
 import Link from "next/link";
-import { ArrowRight, BookOpen } from "lucide-react";
+import { ArrowRight, BookOpen, GraduationCap } from "lucide-react";
+import { useAI } from "@/lib/ai-context";
 
 function formatTime(seconds: number): string {
   const m = Math.floor(seconds / 60);
@@ -14,6 +15,7 @@ function formatTime(seconds: number): string {
 
 export default function ProgressPage() {
   const { loading, isLoggedIn, attempts, materialProgress, streak, xp } = useProgress();
+  const { openAI } = useAI();
 
   const avg = attempts.length
     ? Math.round(attempts.reduce((sum, a) => sum + a.percent, 0) / attempts.length)
@@ -117,6 +119,30 @@ export default function ProgressPage() {
                   </div>
                 </div>
               </div>
+            </div>
+
+            {/* AI Coach card */}
+            <div className="rounded-2xl border-2 border-secondary/20 bg-secondary/5 p-4 mb-5 flex items-center gap-3 card-elevated">
+              <div className="h-10 w-10 rounded-2xl bg-secondary/10 flex items-center justify-center shrink-0">
+                <GraduationCap className="h-5 w-5 text-secondary" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="font-extrabold text-sm">AI Study Coach</p>
+                <p className="text-xs text-muted-foreground font-semibold">Personalised study plan based on your results</p>
+              </div>
+              <button
+                onClick={() => {
+                  const chapterSummary = MATERIAL_CHAPTERS.map((ch) => {
+                    const done = materialByChapter[ch.chapter] ?? 0;
+                    const total = sectionTotals[ch.chapter];
+                    return `${ch.title}: ${done}/${total} sections read`;
+                  }).join(", ");
+                  openAI("coach", { avgScore: avg, testCount: attempts.length, passedCount: passed, chapterSummary });
+                }}
+                className="btn-3d px-4 py-2 rounded-xl bg-secondary text-white text-xs font-extrabold hover:bg-secondary/90 transition-colors shadow-md shadow-secondary/20 shrink-0"
+              >
+                Get plan
+              </button>
             </div>
 
             {/* Stats row */}

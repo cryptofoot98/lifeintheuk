@@ -8,6 +8,7 @@ import { Sun, Moon, Bell, Search, User, LogOut } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useEffect, useState, useRef } from "react";
 import { UserStatsChip } from "@/components/UserStatsChip";
+import { AiFab } from "@/components/AiFab";
 import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
 
@@ -158,6 +159,9 @@ export function AppNav() {
       />
       {/* Mobile spacer — pt-2(8) + h-14(56) = 64 */}
       <div className="md:hidden" style={{ height: 64 }} />
+
+      {/* AI FAB — shown on all authenticated pages */}
+      <AiFab />
 
       {/* ── Floating tab bar (mobile only) ────────────────────────────────── */}
       <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 px-3 pb-3">

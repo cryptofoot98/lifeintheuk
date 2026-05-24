@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Nunito } from "next/font/google";
 import { ThemeProvider } from "@/components/ThemeProvider";
+import { AiProvider } from "@/lib/ai-context";
 import "./globals.css";
 
 const nunito = Nunito({
@@ -32,7 +33,9 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${nunito.variable} ${nunitoBody.variable}`} suppressHydrationWarning>
       <body className="min-h-screen bg-background text-foreground antialiased">
-        <ThemeProvider>{children}</ThemeProvider>
+        <ThemeProvider>
+          <AiProvider>{children}</AiProvider>
+        </ThemeProvider>
       </body>
     </html>
   );
