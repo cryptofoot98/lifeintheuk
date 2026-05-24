@@ -10,11 +10,11 @@ const CDN = "https://images.cryptofoot98.me/britzen";
 
 // Each icon: starting angle (degrees), orbit radius, size, revolution duration (seconds)
 const ORBIT = [
-  { src: `${CDN}/icon_royalguard.png`,      a: -90, r: 132, s: 52, d: 18 },
-  { src: `${CDN}/icon_blackcab.png`,         a: -18, r: 150, s: 44, d: 24 },
-  { src: `${CDN}/icon_bigben.png`,           a:  54, r: 128, s: 48, d: 21 },
-  { src: `${CDN}/icon_telephonecabin.png`,   a: 126, r: 146, s: 40, d: 19 },
-  { src: `${CDN}/icon_unionjack.png`,        a: 198, r: 122, s: 36, d: 26 },
+  { src: `${CDN}/icon_royalguard.png`,      a: -90, r: 200, s: 60, d: 18 },
+  { src: `${CDN}/icon_blackcab.png`,         a: -18, r: 220, s: 52, d: 24 },
+  { src: `${CDN}/icon_bigben.png`,           a:  54, r: 196, s: 56, d: 21 },
+  { src: `${CDN}/icon_telephonecabin.png`,   a: 126, r: 214, s: 48, d: 19 },
+  { src: `${CDN}/icon_unionjack.png`,        a: 198, r: 190, s: 44, d: 26 },
 ];
 
 export function HeroSection() {
@@ -34,7 +34,7 @@ export function HeroSection() {
       <div className="absolute bottom-0 right-1/4 w-[400px] h-[300px] bg-secondary/7 rounded-full blur-[100px] pointer-events-none" />
 
       {/* ── Interactive icon cluster ─────────────────────────────────── */}
-      <div className="relative mb-8 shrink-0" style={{ width: 320, height: 320 }}>
+      <div className="relative mb-8 shrink-0" style={{ width: 480, height: 480 }}>
         {/* Dashed orbit ring */}
         <div className="absolute inset-0 rounded-full border border-dashed border-border/35 pointer-events-none" />
 
@@ -78,8 +78,8 @@ export function HeroSection() {
             <Image
               src={`${CDN}/logo_britzen.png`}
               alt="Britzen"
-              width={116}
-              height={116}
+              width={200}
+              height={200}
               className="relative drop-shadow-2xl"
               priority
             />
