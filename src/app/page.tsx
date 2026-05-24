@@ -350,7 +350,7 @@ export default function HomePage() {
                   ))}
                 </ul>
                 <Link
-                  href="/auth/signup"
+                  href="/auth/login"
                   className="btn-3d w-full text-center bg-primary text-white py-3.5 rounded-2xl font-extrabold text-sm hover:bg-primary/90 transition-colors shadow-lg shadow-primary/30 flex items-center justify-center gap-2"
                 >
                   <Lock className="h-4 w-4" />
@@ -465,10 +465,10 @@ export default function HomePage() {
               Don&apos;t leave it to chance. Your first test is free — no commitment. If you like what you see, unlock everything for £8.90. One-time. Forever.
             </p>
             <Link
-              href="/auth/signup"
+              href="/auth/login"
               className="btn-3d inline-flex items-center gap-2 bg-primary text-white px-10 py-4 rounded-2xl font-extrabold text-lg hover:bg-primary/90 transition-colors shadow-xl shadow-primary/30"
             >
-              Start free trial now
+              Get started
               <ArrowRight className="h-5 w-5" />
             </Link>
             <p className="mt-4 text-xs text-muted-foreground font-semibold">

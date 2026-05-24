@@ -179,10 +179,10 @@ export function HeroSection() {
         className="flex flex-col sm:flex-row gap-3 mb-6"
       >
         <Link
-          href="/auth/signup"
+          href="/auth/login"
           className="btn-3d inline-flex items-center justify-center gap-2 bg-primary text-white px-8 py-3.5 rounded-2xl font-extrabold text-base hover:bg-primary/90 transition-colors shadow-lg shadow-primary/25"
         >
-          Start free trial
+          Get started
           <ArrowRight className="h-4 w-4" />
         </Link>
         <Link

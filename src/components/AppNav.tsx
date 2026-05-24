@@ -48,6 +48,9 @@ export function AppNav() {
   const [navRowVisible, setNavRowVisible] = useState(true);
   const [searchOpen, setSearchOpen] = useState(false);
   const [stats, setStats] = useState<UserStats | null>(null);
+  const [notifOpen, setNotifOpen] = useState(false);
+  const [notifRead, setNotifRead] = useState(false);
+  const notifRef = useRef<HTMLDivElement>(null);
   const lastScrollY = useRef(0);
 
   // Framer-motion scroll value — drives goals row collapse at native frame rate
@@ -100,6 +103,18 @@ export function AppNav() {
     loadProfile();
   }, []);
 
+  // Close notifications on outside click
+  useEffect(() => {
+    if (!notifOpen) return;
+    const handler = (e: MouseEvent) => {
+      if (notifRef.current && !notifRef.current.contains(e.target as Node)) {
+        setNotifOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, [notifOpen]);
+
   // Cmd+K shortcut
   useEffect(() => {
     const fn = (e: KeyboardEvent) => {
@@ -124,6 +139,21 @@ export function AppNav() {
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, [scrollY]);
+
+  const notifications = [
+    stats
+      ? stats.streak > 0
+        ? { icon: "🔥", text: `${stats.streak}-day streak — keep it going!`, sub: "Daily reminder" }
+        : { icon: "📅", text: "Start your streak today — take a test!", sub: "No active streak" }
+      : { icon: "📝", text: "Complete a practice test to track your progress.", sub: "Getting started" },
+    stats && stats.testsToday === 0
+      ? { icon: "📝", text: "You haven't taken a test today yet.", sub: "Daily goal" }
+      : stats && stats.testsToday > 0
+        ? { icon: "✅", text: `${stats.testsToday} test${stats.testsToday > 1 ? "s" : ""} completed today!`, sub: "Daily goal met" }
+        : null,
+    { icon: "💡", text: "History (Ch. 3) is the most tested section in real exams.", sub: "Study tip" },
+    { icon: "🎓", text: "Try a Real Exam to simulate test day conditions.", sub: "Practice tip" },
+  ].filter(Boolean) as { icon: string; text: string; sub: string }[];
 
   const level         = stats ? getLevelForXP(stats.xp) : null;
   const levelProgress = stats ? getProgressToNextLevel(stats.xp) : null;
@@ -163,13 +193,33 @@ export function AppNav() {
 
             {/* Right icons */}
             <div className="flex items-center gap-1.5 ml-auto">
-              <button
-                className="h-9 w-9 flex items-center justify-center rounded-xl border-2 border-border text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-all relative"
-                aria-label="Notifications"
-              >
-                <Bell className="h-4 w-4" />
-                <span className="absolute top-1.5 right-1.5 h-2 w-2 rounded-full bg-primary" />
-              </button>
+              {/* Notifications */}
+              <div className="relative" ref={notifRef}>
+                <button
+                  onClick={() => { setNotifOpen((o) => !o); setNotifRead(true); }}
+                  className="h-9 w-9 flex items-center justify-center rounded-xl border-2 border-border text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-all relative"
+                  aria-label="Notifications"
+                >
+                  <Bell className="h-4 w-4" />
+                  {!notifRead && <span className="absolute top-1.5 right-1.5 h-2 w-2 rounded-full bg-primary" />}
+                </button>
+                {notifOpen && (
+                  <div className="absolute right-0 top-11 z-[60] w-72 bg-card border-2 border-border rounded-2xl shadow-xl shadow-black/12 flex flex-col overflow-hidden">
+                    <div className="px-4 py-3 border-b border-border/60">
+                      <span className="text-xs font-extrabold text-muted-foreground uppercase tracking-widest">Notifications</span>
+                    </div>
+                    {notifications.map((n, i) => (
+                      <div key={i} className="flex items-start gap-3 px-4 py-3 hover:bg-muted/50 transition-colors border-b border-border/30 last:border-b-0">
+                        <span className="text-xl shrink-0 mt-0.5">{n.icon}</span>
+                        <div className="min-w-0">
+                          <div className="text-sm font-semibold leading-snug">{n.text}</div>
+                          <div className="text-[11px] text-muted-foreground font-medium mt-0.5">{n.sub}</div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
               {mounted && (
                 <button
                   onClick={() => setTheme(theme === "dark" ? "light" : "dark")}

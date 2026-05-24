@@ -104,7 +104,7 @@ export default function SignupPage() {
 
           {/* Trust signals */}
           <div className="mt-5 pt-5 border-t-2 border-border flex flex-col gap-2">
-            {["One test completely free", "Lifetime unlock from £19", "No subscription ever"].map((t) => (
+            {["One test completely free", "Lifetime unlock — £8.90", "No subscription ever"].map((t) => (
               <div key={t} className="flex items-center gap-2 text-xs text-muted-foreground font-semibold">
                 <CheckCircle className="h-3.5 w-3.5 text-primary shrink-0" />
                 {t}
