@@ -7,20 +7,24 @@ import { useTheme } from "next-themes";
 import { Sun, Moon, Bell, Search, LogOut } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useEffect, useState, useRef } from "react";
-import { UserStatsChip } from "@/components/UserStatsChip";
+import { motion, useMotionValue, useTransform } from "framer-motion";
 import { AiFab } from "@/components/AiFab";
 import { SearchModal } from "@/components/SearchModal";
 import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
+import { getLevelForXP, getProgressToNextLevel } from "@/lib/levels";
 
 const CDN = "https://images.cryptofoot98.me/britzen";
+
+// Goals row collapses over the first 70px of scroll
+const COLLAPSE_AT = 70;
 
 const mainLinks = [
   { href: "/tests",     label: "Tests",            emoji: "📝" },
   { href: "/exams",     label: "Real Exams",        emoji: "🎓" },
-  { href: "/progress",  label: "Progress",         emoji: "📊" },
-  { href: "/study",     label: "Study by chapter", emoji: "📖" },
-  { href: "/materials", label: "Study materials",  emoji: "📚" },
+  { href: "/progress",  label: "Progress",          emoji: "📊" },
+  { href: "/study",     label: "Study by chapter",  emoji: "📖" },
+  { href: "/materials", label: "Study materials",   emoji: "📚" },
 ];
 
 const tabLinks = [
@@ -30,15 +34,33 @@ const tabLinks = [
   { href: "/materials", label: "Materials", emoji: "📚" },
 ];
 
+type UserStats = {
+  streak: number;
+  xp: number;
+  testsToday: number;
+};
+
 export function AppNav() {
   const pathname = usePathname();
   const router = useRouter();
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
-  const [row2Visible, setRow2Visible] = useState(true);
+  const [navRowVisible, setNavRowVisible] = useState(true);
   const [searchOpen, setSearchOpen] = useState(false);
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
+  const [stats, setStats] = useState<UserStats | null>(null);
   const lastScrollY = useRef(0);
+
+  // Framer-motion scroll value — drives goals row collapse at native frame rate
+  const scrollY = useMotionValue(0);
+  const progress = useTransform(scrollY, [0, COLLAPSE_AT], [0, 1], { clamp: true });
+
+  // Goals row
+  const goalsHeight  = useTransform(progress, [0.25, 1], [52, 0]);
+  const goalsOpacity = useTransform(progress, [0, 0.55], [1, 0]);
+
+  // Mini XP bar appears at bottom of Row 1 as goals row disappears
+  const miniBarOpacity = useTransform(progress, [0.45, 1], [0, 1]);
 
   async function handleSignOut() {
     const supabase = createClient();
@@ -49,26 +71,46 @@ export function AppNav() {
   useEffect(() => { setMounted(true); }, []);
 
   useEffect(() => {
-    async function loadAvatar() {
+    async function loadProfile() {
       const supabase = createClient();
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
-      // Prefer profile row avatar, fall back to OAuth provider avatar
-      const { data } = await supabase
-        .from("profiles")
-        .select("avatar_url")
-        .eq("id", user.id)
-        .single();
+
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+
+      const [profileRes, todayRes] = await Promise.all([
+        supabase
+          .from("profiles")
+          .select("avatar_url, streak, xp")
+          .eq("id", user.id)
+          .single(),
+        supabase
+          .from("test_attempts")
+          .select("id")
+          .eq("user_id", user.id)
+          .gte("created_at", today.toISOString()),
+      ]);
+
+      const profile = profileRes.data;
       const url =
-        data?.avatar_url ||
+        profile?.avatar_url ||
         user.user_metadata?.avatar_url ||
         user.user_metadata?.picture ||
         null;
       if (url) setAvatarUrl(url);
+      if (profile) {
+        setStats({
+          streak: profile.streak ?? 0,
+          xp: profile.xp ?? 0,
+          testsToday: todayRes.data?.length ?? 0,
+        });
+      }
     }
-    loadAvatar();
+    loadProfile();
   }, []);
 
+  // Cmd+K shortcut
   useEffect(() => {
     const fn = (e: KeyboardEvent) => {
       if ((e.metaKey || e.ctrlKey) && e.key === "k") {
@@ -80,31 +122,33 @@ export function AppNav() {
     return () => window.removeEventListener("keydown", fn);
   }, []);
 
+  // Single scroll listener: drives both the framer-motion goals row and the boolean nav row
   useEffect(() => {
-    const handleScroll = () => {
+    const onScroll = () => {
       const y = window.scrollY;
-      if (y > lastScrollY.current && y > 60) setRow2Visible(false);
-      else setRow2Visible(true);
+      scrollY.set(y);
+      if (y > lastScrollY.current && y > 60) setNavRowVisible(false);
+      else setNavRowVisible(true);
       lastScrollY.current = y;
     };
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, [scrollY]);
+
+  const level         = stats ? getLevelForXP(stats.xp) : null;
+  const levelProgress = stats ? getProgressToNextLevel(stats.xp) : null;
+  const hasStats      = stats !== null && level !== null && levelProgress !== null;
 
   return (
     <>
       {/* ── Floating header ───────────────────────────────────────────────── */}
       <header className="fixed top-0 left-0 right-0 z-50 px-3 pt-2">
-        {/* Floating card — bg-card is distinctly lighter/darker than page bg */}
         <div
           className="mx-auto max-w-5xl bg-card border-2 border-border rounded-2xl overflow-hidden"
-          style={{
-            boxShadow: "0 4px 20px oklch(0 0 0 / 10%), 0 1px 4px oklch(0 0 0 / 6%)",
-            transition: "box-shadow 0.2s",
-          }}
+          style={{ boxShadow: "0 4px 20px oklch(0 0 0 / 10%), 0 1px 4px oklch(0 0 0 / 6%)" }}
         >
-          {/* Row 1 — always visible */}
-          <div className="px-4 h-14 flex items-center gap-3">
+          {/* ── Row 1: logo · search · actions (always visible) ──────────── */}
+          <div className="relative px-4 h-14 flex items-center gap-3">
             {/* Logo */}
             <Link href="/tests" className="flex items-center gap-2 shrink-0 group mr-1">
               <div className="h-8 w-8 group-hover:scale-105 transition-transform shrink-0">
@@ -126,9 +170,6 @@ export function AppNav() {
                 ⌘K
               </kbd>
             </button>
-
-            {/* XP + streak chip */}
-            <UserStatsChip />
 
             {/* Right icons */}
             <div className="flex items-center gap-1.5 ml-auto">
@@ -156,14 +197,128 @@ export function AppNav() {
                 <LogOut className="h-4 w-4" />
               </button>
             </div>
+
+            {/* Mini XP bar — slides in at bottom of Row 1 as goals row collapses */}
+            {hasStats && (
+              <motion.div
+                className="absolute bottom-0 left-0 right-0 h-[3px] overflow-hidden"
+                style={{ opacity: miniBarOpacity }}
+                aria-hidden
+              >
+                <div
+                  className="h-full bg-primary/70"
+                  style={{ width: `${levelProgress!.pct}%` }}
+                />
+              </motion.div>
+            )}
           </div>
 
-          {/* Row 2 — collapses on scroll, desktop only */}
+          {/* ── Row 2: Daily Goals (collapses smoothly with framer-motion) ── */}
+          {hasStats && (
+            <motion.div
+              className="overflow-hidden border-t border-border/40"
+              style={{ height: goalsHeight, opacity: goalsOpacity }}
+            >
+              <div className="px-4 h-[52px] flex items-center gap-3 sm:gap-4">
+
+                {/* Streak */}
+                <div className="flex items-center gap-1.5 shrink-0">
+                  <span className="text-lg leading-none">🔥</span>
+                  <div className="leading-none">
+                    <div className="font-heading text-sm font-black">{stats!.streak}</div>
+                    <div className="text-[9px] text-muted-foreground font-bold mt-0.5">day streak</div>
+                  </div>
+                </div>
+
+                <div className="h-6 w-px bg-border/60 shrink-0" />
+
+                {/* Today's test goal */}
+                <div className="flex items-center gap-1.5 shrink-0">
+                  {stats!.testsToday >= 1 ? (
+                    <>
+                      <span className="text-lg leading-none">✅</span>
+                      <div className="leading-none">
+                        <div className="font-heading text-sm font-black text-emerald-600 dark:text-emerald-400">
+                          {stats!.testsToday}
+                        </div>
+                        <div className="text-[9px] text-muted-foreground font-bold mt-0.5">
+                          test{stats!.testsToday > 1 ? "s" : ""} today
+                        </div>
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      <span className="text-lg leading-none">📝</span>
+                      <div className="leading-none">
+                        <div className="font-heading text-sm font-black text-muted-foreground">0/1</div>
+                        <div className="text-[9px] text-muted-foreground font-bold mt-0.5">today</div>
+                      </div>
+                    </>
+                  )}
+                </div>
+
+                <div className="h-6 w-px bg-border/60 shrink-0" />
+
+                {/* XP level progress bar (fills remaining space) */}
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center justify-between mb-1.5">
+                    <span className="text-[11px] font-extrabold">
+                      {level!.emoji} {level!.name}
+                    </span>
+                    <span className="text-[10px] font-bold text-muted-foreground">
+                      {level!.maxXP !== Infinity
+                        ? `${levelProgress!.xpInLevel} / ${levelProgress!.xpNeeded} XP`
+                        : `${stats!.xp.toLocaleString()} XP`}
+                    </span>
+                  </div>
+                  <div className="h-2 rounded-full bg-muted overflow-hidden">
+                    <div
+                      className="h-full rounded-full bg-primary transition-all duration-700"
+                      style={{ width: `${levelProgress!.pct}%` }}
+                    />
+                  </div>
+                </div>
+
+                <div className="h-6 w-px bg-border/60 shrink-0" />
+
+                {/* Level badge */}
+                <div className="shrink-0 text-center hidden sm:block">
+                  <div className="font-heading text-sm font-black">Lv.{level!.level}</div>
+                  <div className="text-[9px] text-muted-foreground font-bold mt-0.5">
+                    {stats!.xp.toLocaleString()} XP
+                  </div>
+                </div>
+
+                {/* Avatar → profile */}
+                <Link
+                  href="/profile"
+                  className="shrink-0 h-8 w-8 rounded-xl border-2 border-border overflow-hidden hover:border-primary/40 transition-colors"
+                  aria-label="Profile"
+                >
+                  {avatarUrl ? (
+                    <Image
+                      src={avatarUrl}
+                      alt="Profile"
+                      width={32}
+                      height={32}
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center bg-muted text-sm">
+                      👤
+                    </div>
+                  )}
+                </Link>
+              </div>
+            </motion.div>
+          )}
+
+          {/* ── Row 3: Nav links (desktop only, boolean collapse) ─────────── */}
           <div
-            className="hidden md:block overflow-hidden transition-all duration-300 ease-in-out"
-            style={{ maxHeight: row2Visible ? 52 : 0, opacity: row2Visible ? 1 : 0 }}
+            className="hidden md:block overflow-hidden transition-all duration-300 ease-in-out border-t border-border/40"
+            style={{ maxHeight: navRowVisible ? 52 : 0, opacity: navRowVisible ? 1 : 0 }}
           >
-            <div className="px-4 h-[52px] flex items-center gap-1 border-t border-border/50">
+            <div className="px-4 h-[52px] flex items-center gap-1">
               {mainLinks.map(({ href, label, emoji }) => {
                 const active = pathname === href || pathname.startsWith(href + "/");
                 return (
@@ -187,15 +342,19 @@ export function AppNav() {
         </div>
       </header>
 
-      {/* Spacer — pt-2(8) + h-14(56) + row2(52) */}
+      {/* ── Spacers ───────────────────────────────────────────────────────── */}
+      {/* Desktop: pt-2(8) + Row1(56) + GoalsRow(52 when loaded) + NavRow(52 when visible) */}
       <div
-        className="hidden md:block"
-        style={{ height: 8 + 56 + (row2Visible ? 52 : 0), transition: "height 0.3s cubic-bezier(0.4,0,0.2,1)" }}
+        className="hidden md:block transition-all duration-300"
+        style={{ height: 8 + 56 + (hasStats ? 52 : 0) + (navRowVisible ? 52 : 0) }}
       />
-      {/* Mobile spacer — pt-2(8) + h-14(56) = 64 */}
-      <div className="md:hidden" style={{ height: 64 }} />
+      {/* Mobile: pt-2(8) + Row1(56) + GoalsRow(52 when loaded) */}
+      <div
+        className="md:hidden transition-all duration-300"
+        style={{ height: 8 + 56 + (hasStats ? 52 : 0) }}
+      />
 
-      {/* AI FAB — shown on all authenticated pages */}
+      {/* AI FAB */}
       <AiFab />
 
       {/* Search modal */}
