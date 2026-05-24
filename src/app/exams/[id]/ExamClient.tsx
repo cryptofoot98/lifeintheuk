@@ -137,6 +137,7 @@ export function ExamClient({ questions, examId, title }: Props) {
       timeLimitSeconds={45 * 60}
       onComplete={handleComplete}
       sessionKey={`exam_${examId}`}
+      onStartFresh={() => setKey((k) => k + 1)}
     />
   );
 }

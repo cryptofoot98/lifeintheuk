@@ -280,7 +280,12 @@ export function QuizEngine({ questions, mode, timeLimitSeconds = 45 * 60, onComp
           <span>Resumed from where you left off</span>
           {onStartFresh && (
             <button
-              onClick={onStartFresh}
+              onClick={() => {
+                if (sessionKey) {
+                  try { localStorage.removeItem(`quiz_session_${sessionKey}`); } catch { /* ignore */ }
+                }
+                onStartFresh();
+              }}
               className="ml-auto text-xs px-2.5 py-1 rounded-lg bg-emerald-100 dark:bg-emerald-900/50 hover:bg-emerald-200 dark:hover:bg-emerald-800/60 text-emerald-700 dark:text-emerald-300 font-bold transition-colors"
             >
               Start fresh
