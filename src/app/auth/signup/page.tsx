@@ -1,8 +1,11 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useState } from "react";
 import { ArrowRight, CheckCircle } from "lucide-react";
+
+const CDN = "https://images.cryptofoot98.me/britzen";
 import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
 
@@ -38,8 +41,8 @@ export default function SignupPage() {
         {/* Logo */}
         <div className="text-center mb-8">
           <Link href="/" className="inline-flex flex-col items-center gap-2">
-            <div className="h-14 w-14 rounded-2xl bg-primary flex items-center justify-center text-3xl shadow-xl shadow-primary/30">
-              🇬🇧
+            <div className="h-14 w-14 flex items-center justify-center">
+              <Image src={`${CDN}/logo_britzen.png`} alt="Britzen" width={56} height={56} className="drop-shadow-xl" />
             </div>
             <span className="font-heading font-black text-base">Britzen</span>
           </Link>

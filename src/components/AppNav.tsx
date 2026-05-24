@@ -1,12 +1,15 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useTheme } from "next-themes";
-import { BookOpen, BarChart2, Layers, Sun, Moon, Bell, Search } from "lucide-react";
+import { Sun, Moon, Bell, Search } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useEffect, useState, useRef } from "react";
 import { UserStatsChip } from "@/components/UserStatsChip";
+
+const CDN = "https://images.cryptofoot98.me/britzen";
 
 const mainLinks = [
   { href: "/tests",     label: "Tests",            emoji: "📝" },
@@ -58,8 +61,8 @@ export function AppNav() {
           <div className="px-4 h-14 flex items-center gap-3">
             {/* Logo */}
             <Link href="/tests" className="flex items-center gap-2 shrink-0 group mr-1">
-              <div className="h-8 w-8 rounded-xl bg-primary flex items-center justify-center text-sm shadow-md shadow-primary/30 group-hover:scale-105 transition-transform">
-                🇬🇧
+              <div className="h-8 w-8 group-hover:scale-105 transition-transform shrink-0">
+                <Image src={`${CDN}/logo_britzen.png`} alt="Britzen" width={32} height={32} className="w-8 h-8 drop-shadow-sm" />
               </div>
               <span className="font-heading font-extrabold text-sm tracking-tight hidden sm:inline">
                 Britzen

@@ -1,15 +1,18 @@
 import Link from "next/link";
+import Image from "next/image";
 import { AppNav } from "@/components/AppNav";
 import { CHAPTERS, getQuestionsByChapter } from "@/data/questions";
 import { ChevronRight, BookOpen } from "lucide-react";
 
-const chapterEmojis: Record<number, string> = {
-  1: "🏛️",
-  2: "🗺️",
-  3: "📜",
-  4: "🎭",
-  5: "⚖️",
+const CDN = "https://images.cryptofoot98.me/britzen";
+const CHAPTER_ICONS: Record<number, string> = {
+  1: `${CDN}/icon_unionjack.png`,
+  2: `${CDN}/icon_wales.png`,
+  3: `${CDN}/icon_stonehenge.png`,
+  4: `${CDN}/icon_pint_pie.png`,
+  5: `${CDN}/icon_bigben.png`,
 };
+
 
 const chapterSummaries: Record<number, string> = {
   1: "The core values of British life — democracy, rule of law, individual liberty, and mutual tolerance.",
@@ -45,8 +48,8 @@ export default function StudyPage() {
                 className="rounded-2xl border-2 border-border bg-card overflow-hidden hover:border-primary/30 hover:shadow-md transition-all group"
               >
                 <div className="p-5 flex items-start gap-4">
-                  <div className="h-12 w-12 rounded-2xl bg-primary text-white flex items-center justify-center text-2xl shrink-0 shadow-md shadow-primary/25 group-hover:scale-105 transition-transform">
-                    {chapterEmojis[chapterNum]}
+                  <div className="h-12 w-12 rounded-2xl bg-primary/10 flex items-center justify-center shrink-0 shadow-sm shadow-primary/10 group-hover:scale-105 transition-transform">
+                    <Image src={CHAPTER_ICONS[chapterNum]} alt="" width={36} height={36} className="w-9 h-9" />
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 mb-1">

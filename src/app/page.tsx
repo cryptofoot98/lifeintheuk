@@ -1,51 +1,45 @@
 import Link from "next/link";
+import Image from "next/image";
 import { Nav } from "@/components/Nav";
 import { FadeIn } from "@/components/FadeIn";
 import { PhoneMockup } from "@/components/PhoneMockup";
-import {
-  CheckCircle, Target, BookOpen, BarChart2,
-  Clock, ArrowRight, Star, Zap, Shield, Lock, Flame
-} from "lucide-react";
+import { CheckCircle, ArrowRight, Star, Lock } from "lucide-react";
+
+const CDN = "https://images.cryptofoot98.me/britzen";
 
 const features = [
   {
-    icon: Clock,
-    emoji: "⏱️",
+    iconUrl: `${CDN}/icon_bigben.png`,
     title: "Real exam conditions",
     body: "24 questions, 45 minutes — exactly like the real test. You'll know exactly what to expect on test day.",
     dir: "left" as const,
   },
   {
-    icon: Target,
-    emoji: "🎯",
+    iconUrl: `${CDN}/icon_policeofficer.png`,
     title: "Tracks your weak spots",
     body: "Every wrong answer is remembered. We surface the topics you keep missing so you fix them before it matters.",
     dir: "up" as const,
   },
   {
-    icon: BookOpen,
-    emoji: "📖",
+    iconUrl: `${CDN}/icon_hat_tea.png`,
     title: "Study mode",
     body: "No timer, instant explanations. Perfect for building solid knowledge before testing yourself under pressure.",
     dir: "right" as const,
   },
   {
-    icon: BarChart2,
-    emoji: "📊",
+    iconUrl: `${CDN}/icon_telephonecabin.png`,
     title: "Progress dashboard",
     body: "Score trends, accuracy by chapter, streak counter. Know exactly how ready you are before you book the test.",
     dir: "left" as const,
   },
   {
-    icon: Zap,
-    emoji: "⚡",
+    iconUrl: `${CDN}/icon_unionjack.png`,
     title: "105+ real questions",
     body: "Covering all five official handbook chapters — history, government, values, culture, and geography.",
     dir: "up" as const,
   },
   {
-    icon: Shield,
-    emoji: "🧠",
+    iconUrl: `${CDN}/icon_breakfast.png`,
     title: "Explained, not just tested",
     body: "Every answer has a clear explanation from the official handbook. Understanding beats memorising every time.",
     dir: "right" as const,
@@ -55,19 +49,19 @@ const features = [
 const steps = [
   {
     n: "1",
-    emoji: "🆓",
+    iconUrl: `${CDN}/icon_bus.png`,
     title: "Try it free",
     body: "Take a full 24-question timed practice test right now — no account needed. Zero commitment.",
   },
   {
     n: "2",
-    emoji: "🔓",
+    iconUrl: `${CDN}/icon_blackcab.png`,
     title: "Unlock for life",
     body: "One small payment. All 40 tests, study mode, weak-area drills, and progress dashboard. Forever.",
   },
   {
     n: "3",
-    emoji: "🇬🇧",
+    iconUrl: `${CDN}/icon_royalguard.png`,
     title: "Pass with confidence",
     body: "Study smart, track your progress, and walk into the exam room knowing you are genuinely ready.",
   },
@@ -129,8 +123,19 @@ export default function HomePage() {
           {/* Left — copy */}
           <div className="flex flex-col items-start">
             <FadeIn delay={0}>
+              <div className="mb-5">
+                <Image
+                  src={`${CDN}/logo_britzen.png`}
+                  alt="Britzen"
+                  width={96}
+                  height={96}
+                  className="drop-shadow-2xl"
+                />
+              </div>
+            </FadeIn>
+
+            <FadeIn delay={0.05}>
               <div className="inline-flex items-center gap-2 bg-primary/10 text-primary border border-primary/20 px-4 py-1.5 rounded-full text-sm font-bold mb-8">
-                <span>🇬🇧</span>
                 Updated for the 2026 exam
               </div>
             </FadeIn>
@@ -189,9 +194,22 @@ export default function HomePage() {
             </FadeIn>
           </div>
 
-          {/* Right — phone mockup */}
+          {/* Right — phone mockup with floating icons */}
           <FadeIn delay={0.1} direction="right">
-            <div className="flex justify-center lg:justify-end">
+            <div className="flex justify-center lg:justify-end relative">
+              {/* Decorative floating icons — desktop only */}
+              <div className="absolute -top-6 left-6 opacity-80 -rotate-12 pointer-events-none hidden lg:block">
+                <Image src={`${CDN}/icon_royalguard.png`} alt="" width={60} height={60} className="drop-shadow-lg" />
+              </div>
+              <div className="absolute top-20 -left-2 opacity-70 rotate-6 pointer-events-none hidden lg:block">
+                <Image src={`${CDN}/icon_blackcab.png`} alt="" width={52} height={52} className="drop-shadow-md" />
+              </div>
+              <div className="absolute bottom-36 -left-4 opacity-75 -rotate-8 pointer-events-none hidden lg:block">
+                <Image src={`${CDN}/icon_telephonecabin.png`} alt="" width={50} height={50} className="drop-shadow-md" />
+              </div>
+              <div className="absolute bottom-16 left-4 opacity-70 rotate-10 pointer-events-none hidden lg:block">
+                <Image src={`${CDN}/icon_whisky.png`} alt="" width={46} height={46} className="drop-shadow-sm" />
+              </div>
               <PhoneMockup />
             </div>
           </FadeIn>
@@ -232,14 +250,14 @@ export default function HomePage() {
             </div>
           </FadeIn>
           <div className="grid sm:grid-cols-3 gap-5">
-            {steps.map(({ n, emoji, title, body }, i) => (
+            {steps.map(({ n, iconUrl, title, body }, i) => (
               <FadeIn key={n} direction="up" delay={i * 0.1}>
                 <div className="relative p-6 rounded-2xl border-2 border-border bg-card hover:border-primary/30 hover:shadow-md transition-all group">
                   <div className="flex items-center gap-3 mb-4">
                     <div className="h-10 w-10 rounded-2xl bg-primary text-white flex items-center justify-center font-black text-lg shadow-md shadow-primary/30">
                       {n}
                     </div>
-                    <span className="text-2xl">{emoji}</span>
+                    <Image src={iconUrl} alt="" width={40} height={40} className="w-10 h-10" />
                   </div>
                   <h3 className="font-heading text-xl font-extrabold mb-2">{title}</h3>
                   <p className="text-muted-foreground text-sm leading-relaxed font-medium">{body}</p>
@@ -267,10 +285,10 @@ export default function HomePage() {
             </div>
           </FadeIn>
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {features.map(({ emoji, title, body, dir }, i) => (
+            {features.map(({ iconUrl, title, body, dir }, i) => (
               <FadeIn key={title} direction={dir} delay={i * 0.07}>
                 <div className="p-5 rounded-2xl border-2 border-border bg-card hover:border-primary/25 hover:shadow-lg transition-all group h-full">
-                  <div className="text-3xl mb-3">{emoji}</div>
+                  <Image src={iconUrl} alt="" width={48} height={48} className="mb-3 w-12 h-12" />
                   <h3 className="font-heading font-extrabold text-base mb-2">{title}</h3>
                   <p className="text-sm text-muted-foreground leading-relaxed font-medium">{body}</p>
                 </div>
@@ -449,7 +467,7 @@ export default function HomePage() {
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[300px] bg-primary/8 rounded-full blur-3xl" />
         <FadeIn>
           <div className="relative z-10 text-center max-w-2xl mx-auto">
-            <div className="text-5xl mb-6">🇬🇧</div>
+            <Image src={`${CDN}/logo_britzen.png`} alt="Britzen" width={96} height={96} className="mx-auto mb-6 drop-shadow-2xl" />
             <h2 className="font-heading text-4xl sm:text-5xl font-black mb-4">
               Your citizenship is worth
               <br />
@@ -476,7 +494,7 @@ export default function HomePage() {
       <footer className="py-8 px-4 border-t-2 border-border">
         <div className="mx-auto max-w-6xl flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-muted-foreground font-semibold">
           <div className="flex items-center gap-2">
-            <span className="text-base">🇬🇧</span>
+            <Image src={`${CDN}/logo_britzen.png`} alt="Britzen" width={20} height={20} className="w-5 h-5 shrink-0" />
             <span className="font-extrabold text-foreground">Britzen</span>
           </div>
           <p className="text-center">

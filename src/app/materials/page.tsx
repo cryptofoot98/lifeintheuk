@@ -1,7 +1,17 @@
 import Link from "next/link";
+import Image from "next/image";
 import { BookOpen, Clock, ArrowRight } from "lucide-react";
 import { CHAPTERS } from "@/data/materials";
 import { AppNav } from "@/components/AppNav";
+
+const CDN = "https://images.cryptofoot98.me/britzen";
+const CHAPTER_ICONS: Record<number, string> = {
+  1: `${CDN}/icon_unionjack.png`,
+  2: `${CDN}/icon_wales.png`,
+  3: `${CDN}/icon_stonehenge.png`,
+  4: `${CDN}/icon_pint_pie.png`,
+  5: `${CDN}/icon_bigben.png`,
+};
 
 export const metadata = { title: "Study Materials | Life in the UK" };
 
@@ -31,8 +41,8 @@ export default function MaterialsPage() {
             className="group bg-card border-2 border-border rounded-2xl p-5 hover:border-primary/50 hover:shadow-lg hover:shadow-primary/10 transition-all"
           >
             <div className="flex items-start gap-4">
-              <div className="h-14 w-14 rounded-2xl bg-primary/10 flex items-center justify-center text-3xl shrink-0 group-hover:bg-primary/15 transition-colors">
-                {ch.emoji}
+              <div className="h-14 w-14 rounded-2xl bg-primary/10 flex items-center justify-center shrink-0 group-hover:bg-primary/15 transition-colors">
+                <Image src={CHAPTER_ICONS[ch.chapter]} alt="" width={44} height={44} className="w-11 h-11" />
               </div>
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2 mb-1">

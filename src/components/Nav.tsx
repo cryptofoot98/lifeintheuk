@@ -1,6 +1,9 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
+
+const CDN = "https://images.cryptofoot98.me/britzen";
 import { useTheme } from "next-themes";
 import { Sun, Moon } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -30,8 +33,8 @@ export function Nav() {
       <div className="mx-auto max-w-6xl px-4 flex h-16 items-center justify-between">
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2.5 shrink-0 group">
-          <div className="h-8 w-8 rounded-xl bg-primary flex items-center justify-center text-white font-black text-sm shadow-md shadow-primary/30 group-hover:scale-105 transition-transform">
-            🇬🇧
+          <div className="h-8 w-8 group-hover:scale-105 transition-transform shrink-0">
+            <Image src={`${CDN}/logo_britzen.png`} alt="Britzen" width={32} height={32} className="w-8 h-8 drop-shadow-sm" />
           </div>
           <span className="font-heading font-extrabold text-base tracking-tight hidden sm:inline">
             Britzen

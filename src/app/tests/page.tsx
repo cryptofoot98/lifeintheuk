@@ -1,32 +1,38 @@
 import Link from "next/link";
+import Image from "next/image";
 import { AppNav } from "@/components/AppNav";
 import { DailyGoal } from "@/components/DailyGoal";
 import { CHAPTERS } from "@/data/questions";
-import { BookOpen, Layers, Zap } from "lucide-react";
+
+const CDN = "https://images.cryptofoot98.me/britzen";
+const CHAPTER_ICONS: Record<number, string> = {
+  1: `${CDN}/icon_unionjack.png`,
+  2: `${CDN}/icon_wales.png`,
+  3: `${CDN}/icon_stonehenge.png`,
+  4: `${CDN}/icon_pint_pie.png`,
+  5: `${CDN}/icon_bigben.png`,
+};
 
 const PRACTICE_TESTS = Array.from({ length: 40 }, (_, i) => i + 1);
 
 const modes = [
   {
     href: "/tests/quick",
-    icon: Zap,
-    emoji: "⚡",
+    iconUrl: `${CDN}/icon_bus.png`,
     title: "Quick Quiz",
     desc: "10 random questions · no timer",
     accent: false,
   },
   {
     href: "/tests/1",
-    icon: Layers,
-    emoji: "📝",
+    iconUrl: `${CDN}/icon_royalguard.png`,
     title: "Full Practice Test",
     desc: "24 questions · 45 min · exam conditions",
     accent: true,
   },
   {
     href: "/study",
-    icon: BookOpen,
-    emoji: "📖",
+    iconUrl: `${CDN}/icon_hat_tea.png`,
     title: "Study Mode",
     desc: "Learn with explanations after each answer",
     accent: false,
@@ -52,7 +58,7 @@ export default function TestsPage() {
 
         {/* Mode selector */}
         <div className="grid sm:grid-cols-3 gap-4 mb-8">
-          {modes.map(({ href, emoji, title, desc, accent }) => (
+          {modes.map(({ href, iconUrl, title, desc, accent }) => (
             <Link
               key={href}
               href={href}
@@ -63,7 +69,7 @@ export default function TestsPage() {
                   : "border-border bg-card hover:border-primary/50"
               )}
             >
-              <div className="text-3xl mb-3">{emoji}</div>
+              <Image src={iconUrl} alt="" width={40} height={40} className="w-10 h-10 mb-3" />
               <h3 className={`font-extrabold mb-1 text-sm group-hover:text-primary transition-colors ${accent ? "text-primary" : ""}`}>
                 {title}
               </h3>
@@ -81,9 +87,9 @@ export default function TestsPage() {
               href={`/tests/chapter/${num}`}
               className="rounded-2xl border-2 border-border bg-card p-4 hover:border-primary/50 hover:shadow-md transition-all flex gap-3 items-start group card-elevated"
             >
-              <span className="h-9 w-9 rounded-2xl bg-primary text-white text-xs font-black flex items-center justify-center shrink-0 shadow-sm shadow-primary/25 group-hover:scale-105 transition-transform">
-                {num}
-              </span>
+              <div className="h-9 w-9 rounded-2xl bg-primary/10 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+                <Image src={CHAPTER_ICONS[parseInt(num, 10)]} alt="" width={28} height={28} className="w-7 h-7" />
+              </div>
               <div>
                 <div className="text-sm font-bold leading-snug group-hover:text-primary transition-colors">{name}</div>
                 <div className="text-xs text-muted-foreground mt-0.5 font-semibold">Chapter {num} test</div>
