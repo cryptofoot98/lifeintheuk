@@ -15,6 +15,7 @@ type QuizEngineProps = {
   timeLimitSeconds?: number;
   onComplete: (results: QuizResult) => void;
   sessionKey?: string;
+  onStartFresh?: () => void;
 };
 
 type SavedSession = {
@@ -39,7 +40,7 @@ function formatTime(seconds: number): string {
   return `${m}:${s.toString().padStart(2, "0")}`;
 }
 
-export function QuizEngine({ questions, mode, timeLimitSeconds = 45 * 60, onComplete, sessionKey }: QuizEngineProps) {
+export function QuizEngine({ questions, mode, timeLimitSeconds = 45 * 60, onComplete, sessionKey, onStartFresh }: QuizEngineProps) {
   const isTimed = mode === "timed";
   const isStudy = mode === "study";
   const { openAI } = useAI();
@@ -54,6 +55,11 @@ export function QuizEngine({ questions, mode, timeLimitSeconds = 45 * 60, onComp
       const fingerprint = `${questions.length}_${questions[0]?.question?.slice(0, 30)}`;
       if (data.fingerprint !== fingerprint) return null;
       if (data.answers?.length !== questions.length) return null;
+      // Don't restore a timed session that has already expired
+      if (isTimed && data.timeLeft !== undefined && data.savedAt !== undefined) {
+        const awaySeconds = Math.floor((Date.now() - data.savedAt) / 1000);
+        if (data.timeLeft - awaySeconds <= 0) return null;
+      }
       return data;
     } catch { return null; }
   })());
@@ -272,7 +278,15 @@ export function QuizEngine({ questions, mode, timeLimitSeconds = 45 * 60, onComp
         <div className="flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-emerald-50 dark:bg-emerald-950/40 border-2 border-emerald-200 dark:border-emerald-800 text-sm font-semibold text-emerald-700 dark:text-emerald-300">
           <span>↩️</span>
           <span>Resumed from where you left off</span>
-          <button onClick={() => setShowResumedBanner(false)} className="ml-auto text-emerald-400 hover:text-emerald-600 font-extrabold">✕</button>
+          {onStartFresh && (
+            <button
+              onClick={onStartFresh}
+              className="ml-auto text-xs px-2.5 py-1 rounded-lg bg-emerald-100 dark:bg-emerald-900/50 hover:bg-emerald-200 dark:hover:bg-emerald-800/60 text-emerald-700 dark:text-emerald-300 font-bold transition-colors"
+            >
+              Start fresh
+            </button>
+          )}
+          <button onClick={() => setShowResumedBanner(false)} className="text-emerald-400 hover:text-emerald-600 font-extrabold">✕</button>
         </div>
       )}
 
