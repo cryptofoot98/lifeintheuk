@@ -9,7 +9,7 @@ export default async function TestPage({ params }: Props) {
   const { id } = await params;
   const testNumber = parseInt(id, 10);
 
-  if (isNaN(testNumber) || testNumber < 1 || testNumber > 40) {
+  if (isNaN(testNumber) || testNumber < 1 || testNumber > 100) {
     notFound();
   }
 
@@ -32,5 +32,5 @@ export default async function TestPage({ params }: Props) {
 }
 
 export function generateStaticParams() {
-  return Array.from({ length: 40 }, (_, i) => ({ id: String(i + 1) }));
+  return Array.from({ length: 100 }, (_, i) => ({ id: String(i + 1) }));
 }

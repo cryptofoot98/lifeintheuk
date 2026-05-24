@@ -49,7 +49,7 @@ export function TestClient({ questions, testNumber }: Props) {
       .select("id")
       .eq("user_id", user.id)
       .gte("test_number", 1)
-      .lte("test_number", 40);
+      .lte("test_number", 100);
 
     if ((practiceAttempts?.length ?? 0) < 2) { setAccess("allowed"); return; }
     setAccess("needs-unlock");
