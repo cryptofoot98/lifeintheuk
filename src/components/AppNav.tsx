@@ -4,11 +4,12 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useTheme } from "next-themes";
-import { Sun, Moon, Bell, Search, User, LogOut } from "lucide-react";
+import { Sun, Moon, Bell, Search, LogOut } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useEffect, useState, useRef } from "react";
 import { UserStatsChip } from "@/components/UserStatsChip";
 import { AiFab } from "@/components/AiFab";
+import { SearchModal } from "@/components/SearchModal";
 import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
 
@@ -34,6 +35,8 @@ export function AppNav() {
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
   const [row2Visible, setRow2Visible] = useState(true);
+  const [searchOpen, setSearchOpen] = useState(false);
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
   const lastScrollY = useRef(0);
 
   async function handleSignOut() {
@@ -43,6 +46,32 @@ export function AppNav() {
   }
 
   useEffect(() => { setMounted(true); }, []);
+
+  useEffect(() => {
+    async function loadAvatar() {
+      const supabase = createClient();
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+      const { data } = await supabase
+        .from("profiles")
+        .select("avatar_url")
+        .eq("id", user.id)
+        .single();
+      if (data?.avatar_url) setAvatarUrl(data.avatar_url);
+    }
+    loadAvatar();
+  }, []);
+
+  useEffect(() => {
+    const fn = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === "k") {
+        e.preventDefault();
+        setSearchOpen(true);
+      }
+    };
+    window.addEventListener("keydown", fn);
+    return () => window.removeEventListener("keydown", fn);
+  }, []);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -80,10 +109,16 @@ export function AppNav() {
             </Link>
 
             {/* Search bar */}
-            <div className="flex-1 flex items-center gap-2 bg-muted/60 border-2 border-border rounded-xl px-3 py-2 max-w-xs text-sm text-muted-foreground font-semibold cursor-text hover:border-primary/30 transition-colors">
+            <button
+              onClick={() => setSearchOpen(true)}
+              className="flex-1 flex items-center gap-2 bg-muted/60 border-2 border-border rounded-xl px-3 py-2 max-w-xs text-sm text-muted-foreground font-semibold cursor-pointer hover:border-primary/30 transition-colors"
+            >
               <Search className="h-3.5 w-3.5 shrink-0" />
-              <span className="text-xs">Search questions…</span>
-            </div>
+              <span className="text-xs flex-1 text-left">Search questions…</span>
+              <kbd className="hidden sm:inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-md border border-border text-[9px] font-extrabold">
+                ⌘K
+              </kbd>
+            </button>
 
             {/* XP + streak chip */}
             <UserStatsChip />
@@ -92,10 +127,14 @@ export function AppNav() {
             <div className="flex items-center gap-1.5 ml-auto">
               <Link
                 href="/profile"
-                className="h-9 w-9 flex items-center justify-center rounded-xl border-2 border-border text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-all"
+                className="h-9 w-9 flex items-center justify-center rounded-xl border-2 border-border overflow-hidden hover:border-primary/50 transition-all shrink-0"
                 aria-label="Profile"
               >
-                <User className="h-4 w-4" />
+                {avatarUrl ? (
+                  <Image src={avatarUrl} alt="Profile" width={36} height={36} className="w-full h-full object-cover" />
+                ) : (
+                  <span className="text-base">👤</span>
+                )}
               </Link>
               <button
                 className="h-9 w-9 flex items-center justify-center rounded-xl border-2 border-border text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-all relative"
@@ -163,6 +202,9 @@ export function AppNav() {
       {/* AI FAB — shown on all authenticated pages */}
       <AiFab />
 
+      {/* Search modal */}
+      <SearchModal open={searchOpen} onClose={() => setSearchOpen(false)} />
+
       {/* ── Floating tab bar (mobile only) ────────────────────────────────── */}
       <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 px-3 pb-3">
         <div
@@ -178,7 +220,6 @@ export function AppNav() {
                   href={href}
                   className="flex-1 flex flex-col items-center justify-center py-2.5 gap-0.5 transition-all"
                 >
-                  {/* Icon bubble */}
                   <div className={cn(
                     "flex items-center justify-center h-9 w-9 rounded-xl transition-all duration-200",
                     active ? "bg-primary/12 scale-105" : "bg-transparent"
@@ -194,6 +235,33 @@ export function AppNav() {
                 </Link>
               );
             })}
+            {/* Profile tab with avatar */}
+            {(() => {
+              const active = pathname === "/profile";
+              return (
+                <Link
+                  href="/profile"
+                  className="flex-1 flex flex-col items-center justify-center py-2.5 gap-0.5 transition-all"
+                >
+                  <div className={cn(
+                    "flex items-center justify-center h-9 w-9 rounded-xl transition-all duration-200 overflow-hidden",
+                    active ? "ring-2 ring-primary ring-offset-1 scale-105" : "bg-transparent"
+                  )}>
+                    {avatarUrl ? (
+                      <Image src={avatarUrl} alt="Profile" width={36} height={36} className="w-9 h-9 object-cover rounded-xl" />
+                    ) : (
+                      <span className="text-[22px] leading-none">👤</span>
+                    )}
+                  </div>
+                  <span className={cn(
+                    "text-[10px] font-bold transition-colors",
+                    active ? "text-primary font-extrabold" : "text-muted-foreground"
+                  )}>
+                    Profile
+                  </span>
+                </Link>
+              );
+            })()}
           </div>
           {/* iOS safe area */}
           <div style={{ height: "env(safe-area-inset-bottom)" }} />

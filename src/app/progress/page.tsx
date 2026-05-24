@@ -3,8 +3,9 @@
 import { AppNav } from "@/components/AppNav";
 import { useProgress } from "@/hooks/useProgress";
 import { CHAPTERS as MATERIAL_CHAPTERS } from "@/data/materials";
+import { ActivityCalendar } from "@/components/ActivityCalendar";
 import Link from "next/link";
-import { ArrowRight, BookOpen, GraduationCap } from "lucide-react";
+import { ArrowRight, BookOpen, GraduationCap, CalendarDays } from "lucide-react";
 import { useAI } from "@/lib/ai-context";
 
 function formatTime(seconds: number): string {
@@ -245,6 +246,17 @@ export default function ProgressPage() {
                     Below pass
                   </div>
                 </div>
+              </div>
+            )}
+
+            {/* Activity calendar */}
+            {attempts.length > 0 && (
+              <div className="rounded-2xl border-2 border-border bg-card p-5 mb-5 card-elevated">
+                <h2 className="font-extrabold text-sm mb-4 flex items-center gap-2">
+                  <CalendarDays className="h-4 w-4 text-primary" />
+                  Activity (last 12 weeks)
+                </h2>
+                <ActivityCalendar attempts={attempts} />
               </div>
             )}
 

@@ -2,6 +2,8 @@ import Link from "next/link";
 import Image from "next/image";
 import { AppNav } from "@/components/AppNav";
 import { DailyGoal } from "@/components/DailyGoal";
+import { FullPracticeCard } from "@/components/FullPracticeCard";
+import { TestsGrid } from "@/components/TestsGrid";
 import { CHAPTERS } from "@/data/questions";
 
 const CDN = "https://images.cryptofoot98.me/britzen";
@@ -13,29 +15,18 @@ const CHAPTER_ICONS: Record<number, string> = {
   5: `${CDN}/icon_bigben.png`,
 };
 
-const PRACTICE_TESTS = Array.from({ length: 40 }, (_, i) => i + 1);
-
-const modes = [
+const staticModes = [
   {
     href: "/tests/quick",
     iconUrl: `${CDN}/icon_bus.png`,
     title: "Quick Quiz",
     desc: "10 random questions · no timer",
-    accent: false,
-  },
-  {
-    href: "/tests/1",
-    iconUrl: `${CDN}/icon_royalguard.png`,
-    title: "Full Practice Test",
-    desc: "24 questions · 45 min · exam conditions",
-    accent: true,
   },
   {
     href: "/study",
     iconUrl: `${CDN}/icon_hat_tea.png`,
     title: "Study Mode",
     desc: "Learn with explanations after each answer",
-    accent: false,
   },
 ];
 
@@ -58,24 +49,19 @@ export default function TestsPage() {
 
         {/* Mode selector */}
         <div className="grid sm:grid-cols-3 gap-4 mb-8">
-          {modes.map(({ href, iconUrl, title, desc, accent }) => (
+          {staticModes.map(({ href, iconUrl, title, desc }) => (
             <Link
               key={href}
               href={href}
-              className={cn(
-                "rounded-2xl border-[3px] p-5 hover:shadow-lg transition-all group card-elevated",
-                accent
-                  ? "border-primary bg-primary/5 hover:bg-primary/8"
-                  : "border-border bg-card hover:border-primary/50"
-              )}
+              className="rounded-2xl border-[3px] border-border bg-card p-5 hover:shadow-lg hover:border-primary/50 transition-all group card-elevated"
             >
               <Image src={iconUrl} alt="" width={40} height={40} className="w-10 h-10 mb-3" />
-              <h3 className={`font-extrabold mb-1 text-sm group-hover:text-primary transition-colors ${accent ? "text-primary" : ""}`}>
-                {title}
-              </h3>
+              <h3 className="font-extrabold mb-1 text-sm group-hover:text-primary transition-colors">{title}</h3>
               <p className="text-xs text-muted-foreground font-semibold">{desc}</p>
             </Link>
           ))}
+          {/* Smart continue — reads localStorage to pick up where user left off */}
+          <FullPracticeCard />
         </div>
 
         {/* Chapter tests */}
@@ -100,22 +86,8 @@ export default function TestsPage() {
 
         {/* All 40 tests grid */}
         <h2 className="font-extrabold text-base mb-3">🗂️ All 40 Practice Tests</h2>
-        <div className="grid grid-cols-5 sm:grid-cols-8 lg:grid-cols-10 gap-2">
-          {PRACTICE_TESTS.map((n) => (
-            <Link
-              key={n}
-              href={`/tests/${n}`}
-              className="flex items-center justify-center h-11 rounded-2xl border-2 border-border bg-card text-sm font-extrabold hover:border-primary hover:text-primary hover:bg-primary/5 transition-all hover:scale-105 card-elevated"
-            >
-              {n}
-            </Link>
-          ))}
-        </div>
+        <TestsGrid />
       </main>
     </div>
   );
-}
-
-function cn(...classes: (string | boolean | undefined)[]) {
-  return classes.filter(Boolean).join(" ");
 }
