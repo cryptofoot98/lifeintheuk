@@ -53,12 +53,18 @@ export function AppNav() {
       const supabase = createClient();
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
+      // Prefer profile row avatar, fall back to OAuth provider avatar
       const { data } = await supabase
         .from("profiles")
         .select("avatar_url")
         .eq("id", user.id)
         .single();
-      if (data?.avatar_url) setAvatarUrl(data.avatar_url);
+      const url =
+        data?.avatar_url ||
+        user.user_metadata?.avatar_url ||
+        user.user_metadata?.picture ||
+        null;
+      if (url) setAvatarUrl(url);
     }
     loadAvatar();
   }, []);
@@ -126,17 +132,6 @@ export function AppNav() {
 
             {/* Right icons */}
             <div className="flex items-center gap-1.5 ml-auto">
-              <Link
-                href="/profile"
-                className="h-9 w-9 flex items-center justify-center rounded-xl border-2 border-border overflow-hidden hover:border-primary/50 transition-all shrink-0"
-                aria-label="Profile"
-              >
-                {avatarUrl ? (
-                  <Image src={avatarUrl} alt="Profile" width={36} height={36} className="w-full h-full object-cover" />
-                ) : (
-                  <span className="text-base">👤</span>
-                )}
-              </Link>
               <button
                 className="h-9 w-9 flex items-center justify-center rounded-xl border-2 border-border text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-all relative"
                 aria-label="Notifications"
