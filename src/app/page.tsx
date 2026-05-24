@@ -108,6 +108,32 @@ const faqs = [
   },
 ];
 
+function Wave({
+  from,
+  to,
+  flip = false,
+}: {
+  from: string;
+  to: string;
+  flip?: boolean;
+}) {
+  const d = flip
+    ? "M0,40 C360,0 1080,60 1440,20 L1440,60 L0,60 Z"
+    : "M0,20 C360,60 1080,0 1440,40 L1440,60 L0,60 Z";
+  return (
+    <div className={`${from} overflow-hidden leading-none -mb-px`}>
+      <svg
+        viewBox="0 0 1440 60"
+        preserveAspectRatio="none"
+        style={{ width: "100%", height: 60, display: "block" }}
+        aria-hidden
+      >
+        <path d={d} style={{ fill: to }} />
+      </svg>
+    </div>
+  );
+}
+
 export default function HomePage() {
   return (
     <div className="flex flex-col min-h-screen overflow-hidden">
@@ -116,8 +142,11 @@ export default function HomePage() {
       {/* ── Hero ───────────────────────────────────────────────────────────── */}
       <HeroSection />
 
+      {/* Wave: background → card */}
+      <Wave from="bg-background" to="var(--card)" />
+
       {/* ── Stats bar ──────────────────────────────────────────────────────── */}
-      <section className="py-14 border-y border-border bg-muted/30">
+      <section className="py-14 bg-card">
         <div className="mx-auto max-w-5xl px-4">
           <FadeIn>
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
@@ -127,7 +156,7 @@ export default function HomePage() {
                 { value: "5", label: "Handbook chapters", emoji: "📚" },
                 { value: "75%", label: "Pass mark to beat", emoji: "🎯" },
               ].map(({ value, label, emoji }) => (
-                <div key={label} className="p-5 rounded-2xl border-2 border-border bg-card text-center hover:border-primary/30 hover:shadow-md transition-all">
+                <div key={label} className="p-5 rounded-2xl border-2 border-border bg-background text-center hover:border-primary/30 hover:shadow-md transition-all">
                   <div className="text-2xl mb-2">{emoji}</div>
                   <div className="font-heading text-3xl font-black text-primary mb-1">{value}</div>
                   <div className="text-sm text-muted-foreground font-semibold">{label}</div>
@@ -138,8 +167,11 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* Wave: card → background */}
+      <Wave from="bg-card" to="var(--background)" flip />
+
       {/* ── How it works ───────────────────────────────────────────────────── */}
-      <section id="how-it-works" className="py-24 px-4">
+      <section id="how-it-works" className="py-24 px-4 bg-background">
         <div className="mx-auto max-w-5xl">
           <FadeIn>
             <div className="text-center mb-14">
@@ -168,8 +200,11 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* Wave: background → card */}
+      <Wave from="bg-background" to="var(--card)" />
+
       {/* ── Features ───────────────────────────────────────────────────────── */}
-      <section className="py-24 px-4 bg-muted/20">
+      <section className="py-24 px-4 bg-card">
         <div className="mx-auto max-w-5xl">
           <FadeIn>
             <div className="text-center mb-14">
@@ -187,7 +222,7 @@ export default function HomePage() {
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {features.map(({ iconUrl, title, body, dir }, i) => (
               <FadeIn key={title} direction={dir} delay={i * 0.07}>
-                <div className="p-5 rounded-2xl border-2 border-border bg-card hover:border-primary/25 hover:shadow-lg transition-all group h-full">
+                <div className="p-5 rounded-2xl border-2 border-border bg-background hover:border-primary/25 hover:shadow-lg transition-all group h-full">
                   <Image src={iconUrl} alt="" width={48} height={48} className="mb-3 w-12 h-12" />
                   <h3 className="font-heading font-extrabold text-base mb-2">{title}</h3>
                   <p className="text-sm text-muted-foreground leading-relaxed font-medium">{body}</p>
@@ -197,6 +232,13 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+
+      {/* Wave: card → primary */}
+      <div className="bg-card overflow-hidden leading-none -mb-px">
+        <svg viewBox="0 0 1440 60" preserveAspectRatio="none" style={{ width: "100%", height: 60, display: "block" }} aria-hidden>
+          <path d="M0,40 C360,0 1080,60 1440,20 L1440,60 L0,60 Z" style={{ fill: "var(--primary)" }} />
+        </svg>
+      </div>
 
       {/* ── Streak / Social proof strip ───────────────────────────────────── */}
       <section className="py-14 px-4 bg-primary relative overflow-hidden">
@@ -223,8 +265,15 @@ export default function HomePage() {
         </FadeIn>
       </section>
 
+      {/* Wave: primary → background */}
+      <div className="bg-primary overflow-hidden leading-none -mb-px">
+        <svg viewBox="0 0 1440 60" preserveAspectRatio="none" style={{ width: "100%", height: 60, display: "block" }} aria-hidden>
+          <path d="M0,20 C360,60 1080,0 1440,40 L1440,60 L0,60 Z" style={{ fill: "var(--background)" }} />
+        </svg>
+      </div>
+
       {/* ── Testimonials ───────────────────────────────────────────────────── */}
-      <section className="py-24 px-4">
+      <section className="py-24 px-4 bg-background">
         <div className="mx-auto max-w-5xl">
           <FadeIn>
             <div className="text-center mb-14">
@@ -257,8 +306,11 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* Wave: background → card */}
+      <Wave from="bg-background" to="var(--card)" flip />
+
       {/* ── Pricing ────────────────────────────────────────────────────────── */}
-      <section id="pricing" className="py-24 px-4 bg-muted/20">
+      <section id="pricing" className="py-24 px-4 bg-card">
         <div className="mx-auto max-w-4xl">
           <FadeIn>
             <div className="text-center mb-14">
@@ -274,7 +326,7 @@ export default function HomePage() {
 
           <div className="max-w-md mx-auto">
             <FadeIn>
-              <div className="p-8 rounded-2xl border-2 border-primary bg-card flex flex-col shadow-xl shadow-primary/15">
+              <div className="p-8 rounded-2xl border-2 border-primary bg-background flex flex-col shadow-xl shadow-primary/15">
                 <Image src={`${CDN}/icon_royalguard.png`} alt="" width={56} height={56} className="w-14 h-14 mb-4" />
                 <div className="text-xs font-extrabold text-primary uppercase tracking-wider mb-3">Lifetime unlock</div>
                 <div className="flex items-end gap-2 mb-1">
@@ -310,8 +362,68 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* Wave: card → background */}
+      <Wave from="bg-card" to="var(--background)" />
+
+      {/* ── App Download ───────────────────────────────────────────────────── */}
+      <section className="py-20 px-4 bg-background">
+        <FadeIn>
+          <div className="mx-auto max-w-2xl text-center">
+            <div className="inline-block bg-secondary/10 text-secondary text-xs font-extrabold uppercase tracking-widest px-4 py-1.5 rounded-full mb-4">
+              Mobile app
+            </div>
+            <h2 className="font-heading text-3xl sm:text-4xl font-black mb-3">
+              Study anywhere
+            </h2>
+            <p className="text-muted-foreground mb-8 max-w-md mx-auto font-medium">
+              Britzen is coming to iOS and Android. Study on the bus, on your lunch break — keep your streak alive wherever you are.
+            </p>
+            <div className="flex items-center justify-center gap-4 flex-wrap">
+              {/* Apple App Store badge */}
+              <a
+                href="#"
+                aria-label="Download on the App Store (coming soon)"
+                className="inline-flex items-center gap-3 bg-foreground text-background px-5 py-3 rounded-[14px] hover:opacity-80 transition-opacity"
+              >
+                <svg width="26" height="26" viewBox="0 0 24 24" className="fill-current shrink-0">
+                  <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z" />
+                </svg>
+                <div className="text-left leading-tight">
+                  <div className="text-[10px] font-medium opacity-70">Download on the</div>
+                  <div className="text-base font-extrabold tracking-tight">App Store</div>
+                </div>
+              </a>
+
+              {/* Google Play badge */}
+              <a
+                href="#"
+                aria-label="Get it on Google Play (coming soon)"
+                className="inline-flex items-center gap-3 bg-foreground text-background px-5 py-3 rounded-[14px] hover:opacity-80 transition-opacity"
+              >
+                <svg width="22" height="26" viewBox="0 0 22 24" className="shrink-0">
+                  <path fill="#EA4335" d="M0.02 0.35L11.42 12 0.02 23.65A1.98 1.98 0 0 1 0 23V1C0 .74.01.54.02.35Z" />
+                  <path fill="#FBBC04" d="M21.56 10.54L18.44 8.73 14.38 12l4.06 3.27 3.12-1.81A2 2 0 0 0 21.56 10.54Z" />
+                  <path fill="#4285F4" d="M11.42 12L0.02 23.65C.47 23.88 1.02 23.82 1.43 23.59L14.38 16.24 11.42 12Z" />
+                  <path fill="#34A853" d="M14.38 7.76L1.43.41C1.02.18.47.12.02.35L11.42 12l2.96-4.24Z" />
+                </svg>
+                <div className="text-left leading-tight">
+                  <div className="text-[10px] font-medium opacity-70">Get it on</div>
+                  <div className="text-base font-extrabold tracking-tight">Google Play</div>
+                </div>
+              </a>
+            </div>
+            <p className="mt-5 text-xs text-muted-foreground font-semibold">
+              Coming soon — web app available now
+            </p>
+          </div>
+        </FadeIn>
+      </section>
+
+      {/* Wave: background → card */}
+      <Wave from="bg-background" to="var(--card)" flip />
+
       {/* ── FAQ ────────────────────────────────────────────────────────────── */}
-      <section className="py-24 px-4">
+      <section className="py-24 px-4 bg-card">
         <div className="mx-auto max-w-2xl">
           <FadeIn>
             <div className="text-center mb-12">
@@ -324,7 +436,7 @@ export default function HomePage() {
           <div className="flex flex-col gap-3">
             {faqs.map(({ q, a }, i) => (
               <FadeIn key={q} direction="up" delay={i * 0.06}>
-                <div className="p-5 rounded-2xl border-2 border-border bg-card hover:border-primary/20 transition-colors">
+                <div className="p-5 rounded-2xl border-2 border-border bg-background hover:border-primary/20 transition-colors">
                   <h3 className="font-extrabold mb-2 text-sm">{q}</h3>
                   <p className="text-sm text-muted-foreground leading-relaxed font-medium">{a}</p>
                 </div>
@@ -334,8 +446,11 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* Wave: card → background */}
+      <Wave from="bg-card" to="var(--background)" />
+
       {/* ── Final CTA ──────────────────────────────────────────────────────── */}
-      <section className="py-28 px-4 relative overflow-hidden">
+      <section className="py-28 px-4 bg-background relative overflow-hidden">
         <div className="absolute inset-0 hero-dots opacity-60" />
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[300px] bg-primary/8 rounded-full blur-3xl" />
         <FadeIn>
@@ -363,8 +478,11 @@ export default function HomePage() {
         </FadeIn>
       </section>
 
+      {/* Wave into footer */}
+      <Wave from="bg-background" to="var(--card)" flip />
+
       {/* ── Footer ─────────────────────────────────────────────────────────── */}
-      <footer className="py-8 px-4 border-t-2 border-border">
+      <footer className="py-8 px-4 bg-card">
         <div className="mx-auto max-w-6xl flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-muted-foreground font-semibold">
           <div className="flex items-center gap-2">
             <Image src={`${CDN}/logo_britzen.png`} alt="Britzen" width={20} height={20} className="w-5 h-5 shrink-0" />
