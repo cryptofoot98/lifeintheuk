@@ -184,7 +184,7 @@ export default function HomePage() {
 
             <FadeIn delay={0.28}>
               <div className="flex flex-wrap gap-x-6 gap-y-2 text-sm font-semibold text-muted-foreground">
-                {["No card required", "One test free", "Lifetime unlock — £19"].map((t) => (
+                {["No card required", "One test free", "Lifetime unlock — £8.90"].map((t) => (
                   <span key={t} className="flex items-center gap-1.5">
                     <CheckCircle className="h-3.5 w-3.5 text-primary" />
                     {t}
@@ -372,44 +372,16 @@ export default function HomePage() {
             </div>
           </FadeIn>
 
-          <div className="grid sm:grid-cols-2 gap-5 max-w-2xl mx-auto">
-            <FadeIn direction="left">
-              <div className="p-7 rounded-2xl border-2 border-border bg-card h-full flex flex-col">
-                <div className="text-2xl mb-3">🆓</div>
-                <div className="text-xs font-extrabold text-muted-foreground uppercase tracking-wider mb-3">Free trial</div>
-                <div className="font-heading text-4xl font-black mb-1">£0</div>
-                <div className="text-sm text-muted-foreground font-semibold mb-6">No card needed · right now</div>
-                <ul className="flex flex-col gap-3 mb-8 flex-1">
-                  {[
-                    "1 full practice test (24 questions)",
-                    "Timed exam conditions",
-                    "Instant results and explanations",
-                  ].map((f) => (
-                    <li key={f} className="flex items-start gap-2 text-sm text-muted-foreground font-semibold">
-                      <CheckCircle className="h-4 w-4 text-muted-foreground/50 shrink-0 mt-0.5" />
-                      {f}
-                    </li>
-                  ))}
-                </ul>
-                <Link
-                  href="/auth/signup"
-                  className="w-full text-center border-2 border-border py-3 rounded-2xl font-extrabold text-sm hover:bg-muted/50 transition-all"
-                >
-                  Start free trial
-                </Link>
-              </div>
-            </FadeIn>
-
-            <FadeIn direction="right">
-              <div className="relative p-7 rounded-2xl border-2 border-primary bg-card h-full flex flex-col shadow-xl shadow-primary/15">
-                <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-primary text-white text-xs font-extrabold px-5 py-1.5 rounded-full uppercase tracking-wider shadow-md shadow-primary/30">
-                  🏆 Most popular
-                </div>
-                <div className="text-2xl mb-3 mt-2">🔓</div>
+          <div className="max-w-md mx-auto">
+            <FadeIn>
+              <div className="p-8 rounded-2xl border-2 border-primary bg-card flex flex-col shadow-xl shadow-primary/15">
+                <Image src={`${CDN}/icon_royalguard.png`} alt="" width={56} height={56} className="w-14 h-14 mb-4" />
                 <div className="text-xs font-extrabold text-primary uppercase tracking-wider mb-3">Lifetime unlock</div>
-                <div className="font-heading text-4xl font-black mb-1">£19</div>
-                <div className="text-sm text-muted-foreground font-semibold mb-6">One-time · yours forever</div>
-                <ul className="flex flex-col gap-3 mb-8 flex-1">
+                <div className="flex items-end gap-2 mb-1">
+                  <div className="font-heading text-5xl font-black">£8.90</div>
+                </div>
+                <div className="text-sm text-muted-foreground font-semibold mb-6">One-time · yours forever · no subscription</div>
+                <ul className="flex flex-col gap-3 mb-8">
                   {[
                     "All 40 practice tests",
                     "Chapter-by-chapter study mode",
@@ -417,6 +389,7 @@ export default function HomePage() {
                     "Progress dashboard & analytics",
                     "Streak tracking & XP",
                     "All future updates included",
+                    "First test always free — no card needed",
                   ].map((f) => (
                     <li key={f} className="flex items-start gap-2 text-sm font-semibold">
                       <CheckCircle className="h-4 w-4 text-primary shrink-0 mt-0.5" />
@@ -426,10 +399,10 @@ export default function HomePage() {
                 </ul>
                 <Link
                   href="/auth/signup"
-                  className="btn-3d w-full text-center bg-primary text-white py-3 rounded-2xl font-extrabold text-sm hover:bg-primary/90 transition-colors shadow-lg shadow-primary/30 flex items-center justify-center gap-2"
+                  className="btn-3d w-full text-center bg-primary text-white py-3.5 rounded-2xl font-extrabold text-sm hover:bg-primary/90 transition-colors shadow-lg shadow-primary/30 flex items-center justify-center gap-2"
                 >
                   <Lock className="h-4 w-4" />
-                  Unlock lifetime access
+                  Get lifetime access — £8.90
                 </Link>
               </div>
             </FadeIn>
@@ -474,7 +447,7 @@ export default function HomePage() {
               <span className="text-primary">getting right.</span>
             </h2>
             <p className="text-muted-foreground mb-8 max-w-lg mx-auto leading-relaxed font-medium">
-              Don&apos;t leave it to chance. Try one test for free — no card, no commitment. If you like what you see, unlock everything for £19. One-time. Forever.
+              Don&apos;t leave it to chance. Try one test for free — no card, no commitment. If you like what you see, unlock everything for £8.90. One-time. Forever.
             </p>
             <Link
               href="/auth/signup"
@@ -484,7 +457,7 @@ export default function HomePage() {
               <ArrowRight className="h-5 w-5" />
             </Link>
             <p className="mt-4 text-xs text-muted-foreground font-semibold">
-              No card required · Lifetime access from £19 · Cancel any time
+              No card required · Lifetime access from £8.90 · Cancel any time
             </p>
           </div>
         </FadeIn>
@@ -500,9 +473,12 @@ export default function HomePage() {
           <p className="text-center">
             Based on <em>Life in the United Kingdom: A Guide for New Residents, 3rd edition</em>. Unofficial practice site.
           </p>
-          <div className="flex gap-5">
-            <Link href="/auth/login" className="hover:text-foreground transition-colors">Sign in</Link>
-            <Link href="#pricing" className="hover:text-foreground transition-colors">Pricing</Link>
+          <div className="flex flex-col items-end gap-1">
+            <div className="flex gap-5">
+              <Link href="/auth/login" className="hover:text-foreground transition-colors">Sign in</Link>
+              <Link href="#pricing" className="hover:text-foreground transition-colors">Pricing</Link>
+            </div>
+            <span className="text-muted-foreground/60">Developed by Eric Tavares</span>
           </div>
         </div>
       </footer>

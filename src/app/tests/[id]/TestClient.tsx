@@ -35,11 +35,12 @@ export function TestClient({ questions, testNumber }: Props) {
     // Logged in — check lifetime access or free trial
     const { data: profile } = await supabase
       .from("profiles")
-      .select("has_lifetime_access, free_tests_used")
+      .select("has_lifetime_access, free_tests_used, is_admin")
       .eq("id", user.id)
       .single();
 
     if (!profile) { setAccess("allowed"); return; }
+    if (profile.is_admin) { setAccess("allowed"); return; }
     if (profile.has_lifetime_access) { setAccess("allowed"); return; }
     if (profile.free_tests_used < 1) { setAccess("allowed"); return; }
     setAccess("needs-unlock");

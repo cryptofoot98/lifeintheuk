@@ -4,7 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useTheme } from "next-themes";
-import { Sun, Moon, Bell, Search } from "lucide-react";
+import { Sun, Moon, Bell, Search, User } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useEffect, useState, useRef } from "react";
 import { UserStatsChip } from "@/components/UserStatsChip";
@@ -80,6 +80,13 @@ export function AppNav() {
 
             {/* Right icons */}
             <div className="flex items-center gap-1.5 ml-auto">
+              <Link
+                href="/profile"
+                className="h-9 w-9 flex items-center justify-center rounded-xl border-2 border-border text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-all"
+                aria-label="Profile"
+              >
+                <User className="h-4 w-4" />
+              </Link>
               <button
                 className="h-9 w-9 flex items-center justify-center rounded-xl border-2 border-border text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-all relative"
                 aria-label="Notifications"

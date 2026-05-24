@@ -26,11 +26,9 @@ export default function SignupPage() {
     if (error) {
       setError(error.message);
       setLoading(false);
-    } else if (data.session) {
+    } else {
       router.push("/tests");
       router.refresh();
-    } else {
-      router.push("/auth/check-email?email=" + encodeURIComponent(email));
     }
   };
 

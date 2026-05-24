@@ -52,18 +52,22 @@ export function Nav() {
               {theme === "dark" ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
             </button>
           )}
-          <Link
-            href="/auth/login"
-            className="text-sm text-muted-foreground hover:text-foreground transition-colors px-4 py-2 font-bold"
-          >
-            Sign in
-          </Link>
-          <Link
-            href="/auth/signup"
-            className="btn-3d text-sm bg-primary text-white px-5 py-2.5 rounded-2xl font-extrabold hover:bg-primary/90 transition-colors shadow-md shadow-primary/25"
-          >
-            Get started
-          </Link>
+          {/* Pill bar */}
+          <div className="flex items-center rounded-2xl border-2 border-border overflow-hidden text-sm font-extrabold">
+            <Link
+              href="/auth/login"
+              className="px-4 py-2.5 text-muted-foreground hover:text-foreground hover:bg-muted/60 transition-colors"
+            >
+              Sign in
+            </Link>
+            <div className="w-px h-6 bg-border shrink-0" />
+            <Link
+              href="/auth/signup"
+              className="px-4 py-2.5 bg-primary text-white hover:bg-primary/90 transition-colors"
+            >
+              Get started
+            </Link>
+          </div>
         </div>
       </div>
     </header>
