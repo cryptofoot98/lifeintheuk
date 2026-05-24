@@ -47,7 +47,6 @@ export function AppNav() {
   const [mounted, setMounted] = useState(false);
   const [navRowVisible, setNavRowVisible] = useState(true);
   const [searchOpen, setSearchOpen] = useState(false);
-  const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
   const [stats, setStats] = useState<UserStats | null>(null);
   const lastScrollY = useRef(0);
 
@@ -58,9 +57,6 @@ export function AppNav() {
   // Goals row
   const goalsHeight  = useTransform(progress, [0.25, 1], [52, 0]);
   const goalsOpacity = useTransform(progress, [0, 0.55], [1, 0]);
-
-  // Mini XP bar appears at bottom of Row 1 as goals row disappears
-  const miniBarOpacity = useTransform(progress, [0.45, 1], [0, 1]);
 
   async function handleSignOut() {
     const supabase = createClient();
@@ -82,7 +78,7 @@ export function AppNav() {
       const [profileRes, todayRes] = await Promise.all([
         supabase
           .from("profiles")
-          .select("avatar_url, streak, xp")
+          .select("streak, xp")
           .eq("id", user.id)
           .single(),
         supabase
@@ -93,12 +89,6 @@ export function AppNav() {
       ]);
 
       const profile = profileRes.data;
-      const url =
-        profile?.avatar_url ||
-        user.user_metadata?.avatar_url ||
-        user.user_metadata?.picture ||
-        null;
-      if (url) setAvatarUrl(url);
       if (profile) {
         setStats({
           streak: profile.streak ?? 0,
@@ -148,7 +138,7 @@ export function AppNav() {
           style={{ boxShadow: "0 4px 20px oklch(0 0 0 / 10%), 0 1px 4px oklch(0 0 0 / 6%)" }}
         >
           {/* ── Row 1: logo · search · actions (always visible) ──────────── */}
-          <div className="relative px-4 h-14 flex items-center gap-3">
+          <div className="px-4 h-14 flex items-center gap-3">
             {/* Logo */}
             <Link href="/tests" className="flex items-center gap-2 shrink-0 group mr-1">
               <div className="h-8 w-8 group-hover:scale-105 transition-transform shrink-0">
@@ -198,19 +188,6 @@ export function AppNav() {
               </button>
             </div>
 
-            {/* Mini XP bar — slides in at bottom of Row 1 as goals row collapses */}
-            {hasStats && (
-              <motion.div
-                className="absolute bottom-0 left-0 right-0 h-[3px] overflow-hidden"
-                style={{ opacity: miniBarOpacity }}
-                aria-hidden
-              >
-                <div
-                  className="h-full bg-primary/70"
-                  style={{ width: `${levelProgress!.pct}%` }}
-                />
-              </motion.div>
-            )}
           </div>
 
           {/* ── Row 2: Daily Goals (collapses smoothly with framer-motion) ── */}
@@ -282,33 +259,12 @@ export function AppNav() {
                 <div className="h-6 w-px bg-border/60 shrink-0" />
 
                 {/* Level badge */}
-                <div className="shrink-0 text-center hidden sm:block">
+                <div className="shrink-0 text-center">
                   <div className="font-heading text-sm font-black">Lv.{level!.level}</div>
                   <div className="text-[9px] text-muted-foreground font-bold mt-0.5">
                     {stats!.xp.toLocaleString()} XP
                   </div>
                 </div>
-
-                {/* Avatar → profile */}
-                <Link
-                  href="/profile"
-                  className="shrink-0 h-8 w-8 rounded-xl border-2 border-border overflow-hidden hover:border-primary/40 transition-colors"
-                  aria-label="Profile"
-                >
-                  {avatarUrl ? (
-                    <Image
-                      src={avatarUrl}
-                      alt="Profile"
-                      width={32}
-                      height={32}
-                      className="w-full h-full object-cover"
-                    />
-                  ) : (
-                    <div className="w-full h-full flex items-center justify-center bg-muted text-sm">
-                      👤
-                    </div>
-                  )}
-                </Link>
               </div>
             </motion.div>
           )}
@@ -339,6 +295,21 @@ export function AppNav() {
               })}
             </div>
           </div>
+
+          {/* ── Persistent daily progress bar — always visible at card bottom ── */}
+          {hasStats && (
+            <div className="h-[3px] w-full overflow-hidden bg-muted/40" aria-hidden>
+              <div
+                className="h-full transition-all duration-700"
+                style={{
+                  width: `${levelProgress!.pct}%`,
+                  background: stats!.testsToday >= 1
+                    ? "oklch(0.52 0.16 145)"   /* emerald — daily goal met */
+                    : "var(--primary)",          /* British red — streak at risk */
+                }}
+              />
+            </div>
+          )}
         </div>
       </header>
 
