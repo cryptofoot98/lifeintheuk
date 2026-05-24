@@ -34,7 +34,7 @@ export function Nav() {
             🇬🇧
           </div>
           <span className="font-heading font-extrabold text-base tracking-tight hidden sm:inline">
-            Life in the UK
+            Britzen
           </span>
         </Link>
 

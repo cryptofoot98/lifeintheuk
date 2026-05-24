@@ -477,7 +477,7 @@ export default function HomePage() {
         <div className="mx-auto max-w-6xl flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-muted-foreground font-semibold">
           <div className="flex items-center gap-2">
             <span className="text-base">🇬🇧</span>
-            <span className="font-extrabold text-foreground">Life in the UK Test</span>
+            <span className="font-extrabold text-foreground">Britzen</span>
           </div>
           <p className="text-center">
             Based on <em>Life in the United Kingdom: A Guide for New Residents, 3rd edition</em>. Unofficial practice site.

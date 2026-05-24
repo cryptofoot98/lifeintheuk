@@ -41,7 +41,7 @@ export default function SignupPage() {
             <div className="h-14 w-14 rounded-2xl bg-primary flex items-center justify-center text-3xl shadow-xl shadow-primary/30">
               🇬🇧
             </div>
-            <span className="font-heading font-black text-base">Life in the UK</span>
+            <span className="font-heading font-black text-base">Britzen</span>
           </Link>
           <h1 className="font-heading text-2xl font-black mt-4 mb-1">Start your free trial</h1>
           <p className="text-muted-foreground text-sm font-semibold">One test free · no card required</p>

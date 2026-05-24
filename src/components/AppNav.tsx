@@ -62,7 +62,7 @@ export function AppNav() {
                 🇬🇧
               </div>
               <span className="font-heading font-extrabold text-sm tracking-tight hidden sm:inline">
-                Life in the UK
+                Britzen
               </span>
             </Link>
 
