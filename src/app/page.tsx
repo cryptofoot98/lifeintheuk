@@ -220,15 +220,15 @@ export default function HomePage() {
       <section className="py-14 border-y border-border bg-muted/30">
         <div className="mx-auto max-w-5xl px-4">
           <FadeIn>
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-8 text-center">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
               {[
                 { value: "105+", label: "Practice questions", emoji: "❓" },
                 { value: "40", label: "Full-length tests", emoji: "📝" },
                 { value: "5", label: "Handbook chapters", emoji: "📚" },
                 { value: "75%", label: "Pass mark to beat", emoji: "🎯" },
               ].map(({ value, label, emoji }) => (
-                <div key={label}>
-                  <div className="text-2xl mb-1">{emoji}</div>
+                <div key={label} className="p-5 rounded-2xl border-2 border-border bg-card text-center hover:border-primary/30 hover:shadow-md transition-all">
+                  <div className="text-2xl mb-2">{emoji}</div>
                   <div className="font-heading text-3xl font-black text-primary mb-1">{value}</div>
                   <div className="text-sm text-muted-foreground font-semibold">{label}</div>
                 </div>

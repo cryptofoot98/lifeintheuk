@@ -4,6 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { useState } from "react";
 import { ArrowRight, CheckCircle } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 const CDN = "https://images.cryptofoot98.me/britzen";
 import { createClient } from "@/lib/supabase/client";
@@ -46,6 +47,23 @@ export default function SignupPage() {
           </Link>
           <h1 className="font-heading text-2xl font-black mt-4 mb-1">Start your free trial</h1>
           <p className="text-muted-foreground text-sm font-semibold">One test free · no card required</p>
+        </div>
+
+        {/* Tab switcher */}
+        <div className="flex items-center rounded-2xl border-2 border-border overflow-hidden text-sm font-extrabold mb-5">
+          <Link
+            href="/auth/login"
+            className={cn("flex-1 text-center px-4 py-2.5 transition-colors", "text-muted-foreground hover:text-foreground hover:bg-muted/60")}
+          >
+            Sign in
+          </Link>
+          <div className="w-px h-6 bg-border shrink-0" />
+          <Link
+            href="/auth/signup"
+            className={cn("flex-1 text-center px-4 py-2.5 transition-colors", "bg-primary text-white")}
+          >
+            Sign up
+          </Link>
         </div>
 
         {/* Card */}
@@ -95,12 +113,6 @@ export default function SignupPage() {
           </div>
         </div>
 
-        <p className="text-center text-sm text-muted-foreground mt-5 font-semibold">
-          Already have an account?{" "}
-          <Link href="/auth/login" className="text-primary font-extrabold hover:underline underline-offset-2">
-            Sign in →
-          </Link>
-        </p>
       </div>
     </div>
   );

@@ -133,6 +133,68 @@ left join public.test_attempts ta on ta.user_id = p.id and ta.completed_at is no
 left join public.question_responses qr on qr.user_id = p.id
 group by p.id;
 
+-- ─── ACCOUNT INVITATIONS ─────────────────────────────────────────────────────
+-- One subscription, two users: primary user can invite one person
+create table if not exists public.account_invitations (
+  id uuid default uuid_generate_v4() primary key,
+  inviter_id uuid references public.profiles(id) on delete cascade not null,
+  invited_email text not null,
+  status text not null default 'pending' check (status in ('pending', 'accepted', 'revoked')),
+  created_at timestamptz default now() not null
+);
+
+alter table public.account_invitations enable row level security;
+
+create policy "Users manage own invitations"
+  on public.account_invitations for all
+  using (auth.uid() = inviter_id)
+  with check (auth.uid() = inviter_id);
+
+create index idx_account_invitations_inviter on public.account_invitations(inviter_id);
+create index idx_account_invitations_email on public.account_invitations(lower(invited_email));
+
+-- Auto-accept invitation and share lifetime access when invited user signs up
+create or replace function public.handle_invitation_on_signup()
+returns trigger
+language plpgsql
+security definer set search_path = ''
+as $$
+declare
+  v_inviter_id uuid;
+  v_inviter_has_access boolean;
+begin
+  select ai.inviter_id, p.has_lifetime_access
+  into v_inviter_id, v_inviter_has_access
+  from public.account_invitations ai
+  join public.profiles p on p.id = ai.inviter_id
+  where lower(ai.invited_email) = lower(new.email)
+    and ai.status = 'pending'
+  limit 1;
+
+  if v_inviter_id is not null then
+    update public.account_invitations
+    set status = 'accepted'
+    where inviter_id = v_inviter_id
+      and lower(invited_email) = lower(new.email)
+      and status = 'pending';
+
+    if v_inviter_has_access then
+      update public.profiles
+      set has_lifetime_access = true
+      where id = new.id;
+    end if;
+  end if;
+
+  return new;
+end;
+$$;
+
+create trigger on_invited_user_signup
+  after insert on auth.users
+  for each row execute procedure public.handle_invitation_on_signup();
+
+-- ─── HELPER VIEWS ─────────────────────────────────────────────────────────────
+
 -- Weak topics view — questions answered more than twice with < 50% accuracy
 create or replace view public.weak_question_ids as
 select

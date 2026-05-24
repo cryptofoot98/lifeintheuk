@@ -6,7 +6,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { createClient } from "@/lib/supabase/client";
 import { AppNav } from "@/components/AppNav";
-import { ArrowLeft, Camera, Save, Loader2, User, LogOut } from "lucide-react";
+import { ArrowLeft, Camera, Save, Loader2, User, LogOut, UserPlus } from "lucide-react";
 
 type FormData = {
   full_name: string;
@@ -31,6 +31,11 @@ export default function ProfilePage() {
   const [saved, setSaved] = useState(false);
   const [error, setError] = useState("");
 
+  const [invite, setInvite] = useState<{ id: string; invited_email: string; status: string } | null>(null);
+  const [inviteEmail, setInviteEmail] = useState("");
+  const [sendingInvite, setSendingInvite] = useState(false);
+  const [inviteError, setInviteError] = useState("");
+
   useEffect(() => {
     async function load() {
       const supabase = createClient();
@@ -54,6 +59,17 @@ export default function ProfilePage() {
           avatar_url: data.avatar_url ?? "",
         });
       }
+
+      const { data: inviteData } = await supabase
+        .from("account_invitations")
+        .select("id, invited_email, status")
+        .eq("inviter_id", user.id)
+        .neq("status", "revoked")
+        .order("created_at", { ascending: false })
+        .limit(1)
+        .maybeSingle();
+      if (inviteData) setInvite(inviteData);
+
       setLoading(false);
     }
     load();
@@ -105,6 +121,31 @@ export default function ProfilePage() {
       setForm(prev => ({ ...prev, avatar_url: url }));
     }
     setUploading(false);
+  }
+
+  async function handleSendInvite() {
+    if (!inviteEmail || !userId) return;
+    setSendingInvite(true);
+    setInviteError("");
+    const supabase = createClient();
+    const { data, error: err } = await supabase
+      .from("account_invitations")
+      .insert({ inviter_id: userId, invited_email: inviteEmail })
+      .select("id, invited_email, status")
+      .single();
+    if (err) setInviteError(err.message);
+    else { setInvite(data); setInviteEmail(""); }
+    setSendingInvite(false);
+  }
+
+  async function handleRevokeInvite() {
+    if (!invite) return;
+    const supabase = createClient();
+    const { error: err } = await supabase
+      .from("account_invitations")
+      .update({ status: "revoked" })
+      .eq("id", invite.id);
+    if (!err) setInvite(null);
   }
 
   async function handleSignOut() {
@@ -259,6 +300,64 @@ export default function ProfilePage() {
               : <><Save className="h-4 w-4" /> Save profile</>
             }
           </button>
+        </div>
+
+        {/* Invite section */}
+        <div className="mt-5 bg-card border-2 border-border rounded-2xl p-6 flex flex-col gap-4 card-elevated">
+          <div className="flex items-center gap-3">
+            <div className="h-10 w-10 rounded-2xl bg-primary/10 flex items-center justify-center shrink-0">
+              <UserPlus className="h-5 w-5 text-primary" />
+            </div>
+            <div>
+              <h2 className="font-heading font-black text-base">Invite a study buddy</h2>
+              <p className="text-xs text-muted-foreground font-semibold">One subscription, two users</p>
+            </div>
+          </div>
+
+          {invite ? (
+            <div className="flex items-center justify-between gap-3 px-4 py-3 rounded-2xl border-2 border-border bg-muted/30">
+              <div>
+                <p className="text-sm font-extrabold">{invite.invited_email}</p>
+                <p className="text-xs text-muted-foreground font-semibold mt-0.5">
+                  {invite.status === "accepted" ? "✓ Joined" : "⏳ Pending invite"}
+                </p>
+              </div>
+              <button
+                onClick={handleRevokeInvite}
+                className="text-xs text-destructive font-extrabold hover:underline shrink-0"
+              >
+                Revoke
+              </button>
+            </div>
+          ) : (
+            <>
+              <div>
+                <label className="text-sm font-extrabold block mb-1.5">Their email</label>
+                <input
+                  type="email"
+                  value={inviteEmail}
+                  onChange={(e) => setInviteEmail(e.target.value)}
+                  placeholder="friend@example.com"
+                  className="w-full rounded-2xl border-2 border-border bg-background px-4 py-3 text-sm font-semibold focus:outline-none focus:border-primary transition-all"
+                />
+              </div>
+              {inviteError && (
+                <div className="text-sm font-semibold text-destructive bg-destructive/10 px-4 py-3 rounded-2xl border-2 border-destructive/20">
+                  {inviteError}
+                </div>
+              )}
+              <button
+                onClick={handleSendInvite}
+                disabled={sendingInvite || !inviteEmail}
+                className="btn-3d w-full bg-primary text-white py-3 rounded-2xl font-extrabold text-sm hover:bg-primary/90 transition-colors shadow-md shadow-primary/25 disabled:opacity-60 flex items-center justify-center gap-2"
+              >
+                {sendingInvite
+                  ? <><Loader2 className="h-4 w-4 animate-spin" /> Sending…</>
+                  : <><UserPlus className="h-4 w-4" /> Send invite</>
+                }
+              </button>
+            </>
+          )}
         </div>
 
         {/* Sign out */}
