@@ -2,7 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { Nav } from "@/components/Nav";
 import { FadeIn } from "@/components/FadeIn";
-import { PhoneMockup } from "@/components/PhoneMockup";
+import { HeroSection } from "@/components/HeroSection";
 import { CheckCircle, ArrowRight, Star, Lock } from "lucide-react";
 
 const CDN = "https://images.cryptofoot98.me/britzen";
@@ -51,7 +51,7 @@ const steps = [
     n: "1",
     iconUrl: `${CDN}/icon_bus.png`,
     title: "Try it free",
-    body: "Take a full 24-question timed practice test right now — no account needed. Zero commitment.",
+    body: "Take one full 24-question timed practice test — create a free account and start immediately.",
   },
   {
     n: "2",
@@ -88,7 +88,7 @@ const testimonials = [
 const faqs = [
   {
     q: "Is the free trial really free?",
-    a: "Yes — one full 24-question timed test, no card required. You get the complete experience before deciding.",
+    a: "Yes — one full 24-question timed test, completely free. You get the real experience before deciding whether to unlock.",
   },
   {
     q: "What does 'lifetime unlock' mean?",
@@ -114,107 +114,7 @@ export default function HomePage() {
       <Nav />
 
       {/* ── Hero ───────────────────────────────────────────────────────────── */}
-      <section className="relative min-h-screen flex items-center px-4 pt-20 pb-16 hero-dots overflow-hidden">
-        {/* Background glow blobs */}
-        <div className="absolute -top-32 -right-32 w-[500px] h-[500px] bg-primary/6 rounded-full blur-[100px] pointer-events-none" />
-        <div className="absolute bottom-0 -left-32 w-[400px] h-[400px] bg-secondary/8 rounded-full blur-[80px] pointer-events-none" />
-
-        <div className="relative z-10 mx-auto max-w-6xl w-full grid lg:grid-cols-2 gap-12 lg:gap-8 items-center">
-          {/* Left — copy */}
-          <div className="flex flex-col items-start">
-            <FadeIn delay={0}>
-              <div className="mb-5">
-                <Image
-                  src={`${CDN}/logo_britzen.png`}
-                  alt="Britzen"
-                  width={96}
-                  height={96}
-                  className="drop-shadow-2xl"
-                />
-              </div>
-            </FadeIn>
-
-            <FadeIn delay={0.05}>
-              <div className="inline-flex items-center gap-2 bg-primary/10 text-primary border border-primary/20 px-4 py-1.5 rounded-full text-sm font-bold mb-8">
-                Updated for the 2026 exam
-              </div>
-            </FadeIn>
-
-            <FadeIn delay={0.08}>
-              <h1 className="font-heading text-5xl sm:text-6xl font-black tracking-tight leading-[1.1] mb-5">
-                Pass your Life in the UK test.{" "}
-                <span
-                  style={{
-                    background: "linear-gradient(105deg, #C8102E 20%, #e83050 50%, #C8102E 80%)",
-                    backgroundSize: "200% auto",
-                    WebkitBackgroundClip: "text",
-                    backgroundClip: "text",
-                    WebkitTextFillColor: "transparent",
-                    animation: "shimmer 3s linear infinite",
-                  }}
-                >
-                  First time.
-                </span>
-              </h1>
-            </FadeIn>
-
-            <FadeIn delay={0.15}>
-              <p className="text-lg text-muted-foreground max-w-lg mb-8 leading-relaxed font-medium">
-                Most people fail because they study the wrong way. We built the app we wish existed — beautiful, focused, and brutally effective.
-              </p>
-            </FadeIn>
-
-            <FadeIn delay={0.22}>
-              <div className="flex flex-col sm:flex-row gap-3 mb-8">
-                <Link
-                  href="/auth/signup"
-                  className="btn-3d inline-flex items-center justify-center gap-2 bg-primary text-white px-8 py-3.5 rounded-2xl font-extrabold text-base hover:bg-primary/90 transition-colors shadow-lg shadow-primary/25"
-                >
-                  Start free trial
-                  <ArrowRight className="h-4 w-4" />
-                </Link>
-                <Link
-                  href="#how-it-works"
-                  className="inline-flex items-center justify-center gap-2 border-2 border-border bg-background px-8 py-3.5 rounded-2xl font-bold text-base hover:bg-muted/50 transition-colors"
-                >
-                  How it works
-                </Link>
-              </div>
-            </FadeIn>
-
-            <FadeIn delay={0.28}>
-              <div className="flex flex-wrap gap-x-6 gap-y-2 text-sm font-semibold text-muted-foreground">
-                {["No card required", "One test free", "Lifetime unlock — £8.90"].map((t) => (
-                  <span key={t} className="flex items-center gap-1.5">
-                    <CheckCircle className="h-3.5 w-3.5 text-primary" />
-                    {t}
-                  </span>
-                ))}
-              </div>
-            </FadeIn>
-          </div>
-
-          {/* Right — phone mockup with floating icons */}
-          <FadeIn delay={0.1} direction="right">
-            <div className="flex justify-center lg:justify-end relative">
-              {/* Decorative floating icons — desktop only */}
-              <div className="absolute -top-6 left-6 opacity-80 -rotate-12 pointer-events-none hidden lg:block">
-                <Image src={`${CDN}/icon_royalguard.png`} alt="" width={60} height={60} className="drop-shadow-lg" />
-              </div>
-              <div className="absolute top-20 -left-2 opacity-70 rotate-6 pointer-events-none hidden lg:block">
-                <Image src={`${CDN}/icon_blackcab.png`} alt="" width={52} height={52} className="drop-shadow-md" />
-              </div>
-              <div className="absolute bottom-36 -left-4 opacity-75 -rotate-8 pointer-events-none hidden lg:block">
-                <Image src={`${CDN}/icon_telephonecabin.png`} alt="" width={50} height={50} className="drop-shadow-md" />
-              </div>
-              <div className="absolute bottom-16 left-4 opacity-70 rotate-10 pointer-events-none hidden lg:block">
-                <Image src={`${CDN}/icon_whisky.png`} alt="" width={46} height={46} className="drop-shadow-sm" />
-              </div>
-              <PhoneMockup />
-            </div>
-          </FadeIn>
-        </div>
-      </section>
+      <HeroSection />
 
       {/* ── Stats bar ──────────────────────────────────────────────────────── */}
       <section className="py-14 border-y border-border bg-muted/30">
@@ -389,7 +289,7 @@ export default function HomePage() {
                     "Progress dashboard & analytics",
                     "Streak tracking & XP",
                     "All future updates included",
-                    "First test always free — no card needed",
+                    "First test always free",
                   ].map((f) => (
                     <li key={f} className="flex items-start gap-2 text-sm font-semibold">
                       <CheckCircle className="h-4 w-4 text-primary shrink-0 mt-0.5" />
@@ -447,7 +347,7 @@ export default function HomePage() {
               <span className="text-primary">getting right.</span>
             </h2>
             <p className="text-muted-foreground mb-8 max-w-lg mx-auto leading-relaxed font-medium">
-              Don&apos;t leave it to chance. Try one test for free — no card, no commitment. If you like what you see, unlock everything for £8.90. One-time. Forever.
+              Don&apos;t leave it to chance. Your first test is free — no commitment. If you like what you see, unlock everything for £8.90. One-time. Forever.
             </p>
             <Link
               href="/auth/signup"
@@ -457,7 +357,7 @@ export default function HomePage() {
               <ArrowRight className="h-5 w-5" />
             </Link>
             <p className="mt-4 text-xs text-muted-foreground font-semibold">
-              No card required · Lifetime access from £8.90 · Cancel any time
+              1 test free · Lifetime access £8.90 · No subscription
             </p>
           </div>
         </FadeIn>
