@@ -4,10 +4,12 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useTheme } from "next-themes";
-import { Sun, Moon, Bell, Search, User } from "lucide-react";
+import { Sun, Moon, Bell, Search, User, LogOut } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useEffect, useState, useRef } from "react";
 import { UserStatsChip } from "@/components/UserStatsChip";
+import { createClient } from "@/lib/supabase/client";
+import { useRouter } from "next/navigation";
 
 const CDN = "https://images.cryptofoot98.me/britzen";
 
@@ -27,10 +29,17 @@ const tabLinks = [
 
 export function AppNav() {
   const pathname = usePathname();
+  const router = useRouter();
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
   const [row2Visible, setRow2Visible] = useState(true);
   const lastScrollY = useRef(0);
+
+  async function handleSignOut() {
+    const supabase = createClient();
+    await supabase.auth.signOut();
+    router.push("/");
+  }
 
   useEffect(() => { setMounted(true); }, []);
 
@@ -103,6 +112,13 @@ export function AppNav() {
                   {theme === "dark" ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
                 </button>
               )}
+              <button
+                onClick={handleSignOut}
+                className="h-9 w-9 flex items-center justify-center rounded-xl border-2 border-border text-muted-foreground hover:text-destructive hover:border-destructive/40 hover:bg-destructive/8 transition-all"
+                aria-label="Sign out"
+              >
+                <LogOut className="h-4 w-4" />
+              </button>
             </div>
           </div>
 

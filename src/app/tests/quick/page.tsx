@@ -32,6 +32,7 @@ export default function QuickQuizPage() {
             questions={questions}
             mode="untimed"
             onComplete={setResult}
+            sessionKey="quick"
           />
         )}
       </main>

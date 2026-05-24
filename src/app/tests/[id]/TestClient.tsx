@@ -127,6 +127,7 @@ export function TestClient({ questions, testNumber }: Props) {
       mode="timed"
       timeLimitSeconds={45 * 60}
       onComplete={handleComplete}
+      sessionKey={`test_${testNumber}`}
     />
   );
 }

@@ -45,6 +45,7 @@ export default function ChapterTestPage({ params }: Props) {
             questions={questions}
             mode="study"
             onComplete={setResult}
+            sessionKey={`chapter_${chapterNum}`}
           />
         )}
       </main>

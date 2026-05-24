@@ -13,6 +13,16 @@ type QuizEngineProps = {
   mode: TestMode;
   timeLimitSeconds?: number;
   onComplete: (results: QuizResult) => void;
+  sessionKey?: string;
+};
+
+type SavedSession = {
+  current: number;
+  answers: AnswerState[];
+  timeLeft: number;
+  elapsed: number;
+  savedAt: number;
+  fingerprint: string;
 };
 
 export type QuizResult = {
@@ -28,22 +38,62 @@ function formatTime(seconds: number): string {
   return `${m}:${s.toString().padStart(2, "0")}`;
 }
 
-export function QuizEngine({ questions, mode, timeLimitSeconds = 45 * 60, onComplete }: QuizEngineProps) {
-  const [current, setCurrent] = useState(0);
+export function QuizEngine({ questions, mode, timeLimitSeconds = 45 * 60, onComplete, sessionKey }: QuizEngineProps) {
+  const isTimed = mode === "timed";
+  const isStudy = mode === "study";
+
+  // Load saved session once — fingerprint prevents restoring a random quiz after page reload
+  const savedRef = useRef<SavedSession | null>((() => {
+    if (!sessionKey || typeof window === "undefined") return null;
+    try {
+      const raw = localStorage.getItem(`quiz_session_${sessionKey}`);
+      if (!raw) return null;
+      const data: SavedSession = JSON.parse(raw);
+      const fingerprint = `${questions.length}_${questions[0]?.question?.slice(0, 30)}`;
+      if (data.fingerprint !== fingerprint) return null;
+      if (data.answers?.length !== questions.length) return null;
+      return data;
+    } catch { return null; }
+  })());
+  const saved = savedRef.current;
+
+  const [current, setCurrent] = useState(saved?.current ?? 0);
   const [answers, setAnswers] = useState<AnswerState[]>(
-    questions.map(() => ({ selected: [], submitted: false }))
+    saved?.answers ?? questions.map(() => ({ selected: [], submitted: false }))
   );
-  const [timeLeft, setTimeLeft] = useState(timeLimitSeconds);
-  const [elapsed, setElapsed] = useState(0);
+  const [timeLeft, setTimeLeft] = useState(() => {
+    if (!saved || !isTimed) return timeLimitSeconds;
+    const awaySeconds = Math.floor((Date.now() - saved.savedAt) / 1000);
+    return Math.max(0, saved.timeLeft - awaySeconds);
+  });
+  const [elapsed, setElapsed] = useState(saved?.elapsed ?? 0);
   const [combo, setCombo] = useState(0);
   const [xpFloatKey, setXpFloatKey] = useState<number | null>(null);
   const [comboFlash, setComboFlash] = useState(false);
-  const startTime = useRef(Date.now());
+  const [showResumedBanner, setShowResumedBanner] = useState(!!saved);
+  const startTime = useRef(
+    saved && !isTimed ? Date.now() - (saved.elapsed ?? 0) * 1000 : Date.now()
+  );
 
-  const isTimed = mode === "timed";
-  const isStudy = mode === "study";
   const q = questions[current];
   const ans = answers[current];
+
+  // Persist session on every state change
+  useEffect(() => {
+    if (!sessionKey) return;
+    try {
+      const fingerprint = `${questions.length}_${questions[0]?.question?.slice(0, 30)}`;
+      const data: SavedSession = { current, answers, timeLeft, elapsed, savedAt: Date.now(), fingerprint };
+      localStorage.setItem(`quiz_session_${sessionKey}`, JSON.stringify(data));
+    } catch { /* ignore */ }
+  }, [current, answers, timeLeft, elapsed, sessionKey, questions]);
+
+  // Auto-dismiss the resumed banner
+  useEffect(() => {
+    if (!showResumedBanner) return;
+    const t = setTimeout(() => setShowResumedBanner(false), 4000);
+    return () => clearTimeout(t);
+  }, [showResumedBanner]);
 
   useEffect(() => {
     if (!isTimed) {
@@ -102,13 +152,18 @@ export function QuizEngine({ questions, mode, timeLimitSeconds = 45 * 60, onComp
   const goNext = () => { if (current < questions.length - 1) setCurrent(current + 1); };
 
   const handleFinish = useCallback(() => {
-    const timeTaken = Math.floor((Date.now() - startTime.current) / 1000);
+    if (sessionKey) {
+      try { localStorage.removeItem(`quiz_session_${sessionKey}`); } catch { /* ignore */ }
+    }
+    const timeTaken = isTimed
+      ? timeLimitSeconds - timeLeft
+      : Math.floor((Date.now() - startTime.current) / 1000);
     const score = answers.filter((a, i) => {
       const c = questions[i].correctAnswers;
       return a.submitted && a.selected.length === c.length && a.selected.every((s) => c.includes(s));
     }).length;
     onComplete({ questions, answers, timeTaken, score });
-  }, [answers, questions, onComplete]);
+  }, [answers, questions, onComplete, sessionKey, isTimed, timeLimitSeconds, timeLeft]);
 
   const getAnswerResult = (qIdx: number): boolean | null => {
     const a = answers[qIdx];
@@ -190,6 +245,15 @@ export function QuizEngine({ questions, mode, timeLimitSeconds = 45 * 60, onComp
           );
         })}
       </div>
+
+      {/* Resumed banner */}
+      {showResumedBanner && (
+        <div className="flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-emerald-50 dark:bg-emerald-950/40 border-2 border-emerald-200 dark:border-emerald-800 text-sm font-semibold text-emerald-700 dark:text-emerald-300">
+          <span>↩️</span>
+          <span>Resumed from where you left off</span>
+          <button onClick={() => setShowResumedBanner(false)} className="ml-auto text-emerald-400 hover:text-emerald-600 font-extrabold">✕</button>
+        </div>
+      )}
 
       {/* ── Question ─────────────────────────────────────────────────────────── */}
       <div className="relative">
