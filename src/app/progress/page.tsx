@@ -272,7 +272,11 @@ export default function ProgressPage() {
                     >
                       <span className="text-base">{a.passed ? "✅" : "❌"}</span>
                       <span className="font-extrabold w-24 shrink-0">
-                        {a.testNumber === 0 ? "Quick Quiz" : `Test ${a.testNumber}`}
+                        {a.testNumber === 0
+                          ? "Quick Quiz"
+                          : a.testNumber > 100
+                          ? `Exam #${a.testNumber - 100}`
+                          : `Test ${a.testNumber}`}
                       </span>
                       <span className={`font-extrabold ${a.passed ? "text-emerald-600 dark:text-emerald-400" : "text-red-500"}`}>
                         {a.percent}%

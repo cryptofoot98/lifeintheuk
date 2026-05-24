@@ -5,6 +5,7 @@ import { DailyGoal } from "@/components/DailyGoal";
 import { FullPracticeCard } from "@/components/FullPracticeCard";
 import { TestsGrid } from "@/components/TestsGrid";
 import { CHAPTERS } from "@/data/questions";
+import { examSets } from "@/data/exams";
 
 const CDN = "https://images.cryptofoot98.me/britzen";
 const CHAPTER_ICONS: Record<number, string> = {
@@ -62,6 +63,25 @@ export default function TestsPage() {
           ))}
           {/* Smart continue — reads localStorage to pick up where user left off */}
           <FullPracticeCard />
+        </div>
+
+        {/* Real Exam Questions promo */}
+        <div className="mb-8 rounded-2xl border-2 border-secondary/20 bg-secondary/5 p-5 flex items-center gap-4 card-elevated group hover:border-secondary/40 hover:shadow-md transition-all">
+          <div className="h-12 w-12 rounded-2xl bg-secondary/10 flex items-center justify-center shrink-0 text-2xl group-hover:scale-105 transition-transform">
+            🎓
+          </div>
+          <div className="flex-1 min-w-0">
+            <h3 className="font-extrabold text-sm text-secondary">Real Exam Questions</h3>
+            <p className="text-xs text-muted-foreground font-semibold mt-0.5">
+              {examSets.length} sets reported by real test-takers · same 24 questions / 45 min format
+            </p>
+          </div>
+          <Link
+            href="/exams"
+            className="btn-3d shrink-0 px-4 py-2 rounded-xl bg-secondary text-white text-xs font-extrabold hover:bg-secondary/90 transition-colors shadow-md shadow-secondary/20"
+          >
+            Browse →
+          </Link>
         </div>
 
         {/* Chapter tests */}

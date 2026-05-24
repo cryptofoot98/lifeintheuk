@@ -17,6 +17,7 @@ const CDN = "https://images.cryptofoot98.me/britzen";
 
 const mainLinks = [
   { href: "/tests",     label: "Tests",            emoji: "📝" },
+  { href: "/exams",     label: "Real Exams",        emoji: "🎓" },
   { href: "/progress",  label: "Progress",         emoji: "📊" },
   { href: "/study",     label: "Study by chapter", emoji: "📖" },
   { href: "/materials", label: "Study materials",  emoji: "📚" },
