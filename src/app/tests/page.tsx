@@ -8,7 +8,7 @@ export default function TestsPage() {
       <AppNav />
       <main className="flex-1 mx-auto max-w-5xl w-full px-4 py-6">
         <TestModeGrid />
-        <h2 className="font-extrabold text-base mb-3">🗂️ All 40 Practice Tests</h2>
+        <h2 className="font-extrabold text-base mb-3">🗂️ All 100 Practice Tests</h2>
         <TestsGrid />
       </main>
     </div>
