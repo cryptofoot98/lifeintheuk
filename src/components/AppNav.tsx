@@ -164,7 +164,7 @@ export function AppNav() {
       {/* ── Floating header ───────────────────────────────────────────────── */}
       <header className="fixed top-0 left-0 right-0 z-50 px-3 pt-2">
         <div
-          className="mx-auto max-w-5xl bg-card border-2 border-border rounded-2xl overflow-hidden"
+          className="mx-auto max-w-5xl bg-card border-2 border-border rounded-2xl"
           style={{ boxShadow: "0 4px 20px oklch(0 0 0 / 10%), 0 1px 4px oklch(0 0 0 / 6%)" }}
         >
           {/* ── Row 1: logo · search · actions (always visible) ──────────── */}
@@ -348,7 +348,7 @@ export function AppNav() {
 
           {/* ── Persistent daily progress bar — always visible at card bottom ── */}
           {hasStats && (
-            <div className="h-[3px] w-full overflow-hidden bg-muted/40" aria-hidden>
+            <div className="h-[3px] w-full overflow-hidden bg-muted/40 rounded-b-2xl" aria-hidden>
               <div
                 className="h-full transition-all duration-700"
                 style={{
