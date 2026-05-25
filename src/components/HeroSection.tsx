@@ -200,7 +200,7 @@ export function HeroSection() {
         transition={{ delay: 0.32, duration: 0.55 }}
         className="flex flex-wrap justify-center gap-x-6 gap-y-2 text-sm font-semibold text-muted-foreground"
       >
-        {["1 test free", "Lifetime unlock · £8.90", "No subscription"].map((t) => (
+        {["2 tests + 1 exam free", "No card required", "Lifetime unlock · £8.90"].map((t) => (
           <span key={t} className="flex items-center gap-1.5">
             <CheckCircle className="h-3.5 w-3.5 text-primary" />
             {t}

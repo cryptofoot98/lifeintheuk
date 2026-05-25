@@ -34,7 +34,7 @@ const features = [
   },
   {
     iconUrl: `${CDN}/icon_unionjack.png`,
-    title: "105+ real questions",
+    title: "850+ real questions",
     body: "Covering all five official handbook chapters — history, government, values, culture, and geography.",
     dir: "up" as const,
   },
@@ -50,14 +50,14 @@ const steps = [
   {
     n: "1",
     iconUrl: `${CDN}/icon_bus.png`,
-    title: "Try it free",
-    body: "Take one full 24-question timed practice test — create a free account and start immediately.",
+    title: "Start free — no card",
+    body: "2 full practice tests, 1 real exam simulation, 1 quick quiz, and 1 chapter study — all free. No credit card required.",
   },
   {
     n: "2",
     iconUrl: `${CDN}/icon_blackcab.png`,
     title: "Unlock for life",
-    body: "One small payment. All 40 tests, study mode, weak-area drills, and progress dashboard. Forever.",
+    body: "One small payment. All 100 tests, all 20 real exams, unlimited study mode, and progress dashboard. Forever.",
   },
   {
     n: "3",
@@ -87,12 +87,12 @@ const testimonials = [
 
 const faqs = [
   {
-    q: "Is the free trial really free?",
-    a: "Yes — one full 24-question timed test, completely free. You get the real experience before deciding whether to unlock.",
+    q: "What's included in the free tier?",
+    a: "Quite a lot — 2 full 24-question timed practice tests, 1 real exam simulation, 1 quick quiz, and 1 full chapter of study material. No credit card required, ever.",
   },
   {
     q: "What does 'lifetime unlock' mean?",
-    a: "One payment, no subscription, no renewal. You get full access to everything — all 40 tests, all features — forever.",
+    a: "One payment, no subscription, no renewal. You get full access to everything — all 100 practice tests, all 20 real exams, and all features — forever.",
   },
   {
     q: "Is the content up to date?",
@@ -151,8 +151,8 @@ export default function HomePage() {
           <FadeIn>
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
               {[
-                { value: "105+", label: "Practice questions", emoji: "❓" },
-                { value: "40", label: "Full-length tests", emoji: "📝" },
+                { value: "850+", label: "Practice questions", emoji: "❓" },
+                { value: "100", label: "Full-length tests", emoji: "📝" },
                 { value: "5", label: "Handbook chapters", emoji: "📚" },
                 { value: "75%", label: "Pass mark to beat", emoji: "🎯" },
               ].map(({ value, label, emoji }) => (
@@ -332,16 +332,16 @@ export default function HomePage() {
                 <div className="flex items-end gap-2 mb-1">
                   <div className="font-heading text-5xl font-black">£8.90</div>
                 </div>
-                <div className="text-sm text-muted-foreground font-semibold mb-6">One-time · yours forever · no subscription</div>
+                <div className="text-sm text-muted-foreground font-semibold mb-6">One-time · yours forever · 2 tests + 1 exam free to start</div>
                 <ul className="flex flex-col gap-3 mb-8">
                   {[
-                    "All 40 practice tests",
-                    "Chapter-by-chapter study mode",
-                    "Weak-area drill sessions",
+                    "All 100 practice tests (2 free to start)",
+                    "All 20 real exam simulations (1 free)",
+                    "Chapter-by-chapter study mode (1 free)",
+                    "Quick quiz & weak-area drills (1 free)",
                     "Progress dashboard & analytics",
-                    "Streak tracking & XP",
+                    "Streak tracking & XP system",
                     "All future updates included",
-                    "First test always free",
                   ].map((f) => (
                     <li key={f} className="flex items-start gap-2 text-sm font-semibold">
                       <CheckCircle className="h-4 w-4 text-primary shrink-0 mt-0.5" />
@@ -462,7 +462,7 @@ export default function HomePage() {
               <span className="text-primary">getting right.</span>
             </h2>
             <p className="text-muted-foreground mb-8 max-w-lg mx-auto leading-relaxed font-medium">
-              Don&apos;t leave it to chance. Your first test is free — no commitment. If you like what you see, unlock everything for £8.90. One-time. Forever.
+              Don&apos;t leave it to chance. Start free — 2 practice tests, 1 real exam, 1 chapter, 1 quick quiz, no card required. If you like what you see, unlock everything for £8.90. One-time. Forever.
             </p>
             <Link
               href="/auth/login"
@@ -472,7 +472,7 @@ export default function HomePage() {
               <ArrowRight className="h-5 w-5" />
             </Link>
             <p className="mt-4 text-xs text-muted-foreground font-semibold">
-              1 test free · Lifetime access £8.90 · No subscription
+              2 tests + 1 exam free · No card required · Lifetime access £8.90
             </p>
           </div>
         </FadeIn>
