@@ -40,10 +40,44 @@ function formatTime(seconds: number): string {
   return `${m}:${s.toString().padStart(2, "0")}`;
 }
 
-export function QuizEngine({ questions, mode, timeLimitSeconds = 45 * 60, onComplete, sessionKey, onStartFresh }: QuizEngineProps) {
+// Deterministic per-question option shuffle. Seeded by sessionKey + question.id
+// so resumed sessions get the same shuffle (stored answer indices stay valid).
+function hashCode(str: string): number {
+  let h = 0;
+  for (let i = 0; i < str.length; i++) {
+    h = ((h << 5) - h) + str.charCodeAt(i);
+    h |= 0;
+  }
+  return Math.abs(h) || 1;
+}
+
+function shuffleQuestionOptions(questions: Question[], baseSeed: string): Question[] {
+  return questions.map((q) => {
+    const indices = q.options.map((_, i) => i);
+    let s = hashCode(`${baseSeed}_${q.id}`);
+    // Fisher-Yates with a linear-congruential PRNG seeded by the hash
+    for (let i = indices.length - 1; i > 0; i--) {
+      s = (s * 1103515245 + 12345) & 0x7fffffff;
+      const j = s % (i + 1);
+      [indices[i], indices[j]] = [indices[j], indices[i]];
+    }
+    return {
+      ...q,
+      options: indices.map((i) => q.options[i]),
+      correctAnswers: q.correctAnswers.map((c) => indices.indexOf(c)),
+    };
+  });
+}
+
+export function QuizEngine({ questions: rawQuestions, mode, timeLimitSeconds = 45 * 60, onComplete, sessionKey, onStartFresh }: QuizEngineProps) {
   const isTimed = mode === "timed";
   const isStudy = mode === "study";
   const { openAI } = useAI();
+
+  // Shuffle option order per question (seeded so resumed sessions stay consistent).
+  // When there's no sessionKey, seed with mount time so options are randomised per attempt.
+  const seedRef = useRef(sessionKey ?? `nokey_${Date.now()}`);
+  const [questions] = useState(() => shuffleQuestionOptions(rawQuestions, seedRef.current));
 
   // Load saved session once — fingerprint prevents restoring a random quiz after page reload
   const savedRef = useRef<SavedSession | null>((() => {
