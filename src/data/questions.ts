@@ -11513,5 +11513,14 @@ export function getTestQuestions(testNumber: number): Question[] {
     const hb = Math.sin(seed + b.id) * 10000;
     return (ha - Math.floor(ha)) - (hb - Math.floor(hb));
   });
-  return shuffled.slice(0, 24);
+  // The bank has some reworded duplicates; never ask the same question twice in one test.
+  const seen = new Set<string>();
+  return shuffled
+    .filter((q) => {
+      const key = q.question.trim().toLowerCase();
+      if (seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    })
+    .slice(0, 24);
 }

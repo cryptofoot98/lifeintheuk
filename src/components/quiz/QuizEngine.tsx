@@ -52,9 +52,14 @@ function hashCode(str: string): number {
   return Math.abs(h) || 1;
 }
 
+// Options like "All of the above" only make sense in last place, so they stay pinned.
+const PINNED_LAST = /^(all|none) of the above$/i;
+
 function shuffleQuestionOptions(questions: Question[], baseSeed: string): Question[] {
   return questions.map((q) => {
-    const indices = q.options.map((_, i) => i);
+    const all = q.options.map((_, i) => i);
+    const pinned = all.filter((i) => PINNED_LAST.test(q.options[i].trim()));
+    const indices = all.filter((i) => !pinned.includes(i));
     let s = hashCode(`${baseSeed}_${q.id}`);
     // Fisher-Yates with a linear-congruential PRNG seeded by the hash
     for (let i = indices.length - 1; i > 0; i--) {
@@ -62,6 +67,7 @@ function shuffleQuestionOptions(questions: Question[], baseSeed: string): Questi
       const j = s % (i + 1);
       [indices[i], indices[j]] = [indices[j], indices[i]];
     }
+    indices.push(...pinned);
     return {
       ...q,
       options: indices.map((i) => q.options[i]),
