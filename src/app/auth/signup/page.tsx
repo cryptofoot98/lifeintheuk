@@ -23,10 +23,19 @@ export default function SignupPage() {
     setLoading(true);
     setError("");
     const supabase = createClient();
-    const { data, error } = await supabase.auth.signUp({ email, password });
+    const { data, error } = await supabase.auth.signUp({
+      email,
+      password,
+      // Without this the confirmation link goes to the project's Site URL,
+      // which may not be the host the user signed up on.
+      options: { emailRedirectTo: `${window.location.origin}/tests/` },
+    });
     if (error) {
       setError(error.message);
       setLoading(false);
+    } else if (!data.session) {
+      // Email confirmation is on: no session until they click the link.
+      router.push("/auth/check-email");
     } else {
       router.push("/tests");
       router.refresh();
