@@ -1,34 +1,36 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import { AppNav } from "@/components/AppNav";
 import { QuizEngine, type QuizResult } from "@/components/quiz/QuizEngine";
 import { ResultsScreen } from "@/components/quiz/ResultsScreen";
-import { questions, getRandomQuestions } from "@/data/questions";
+import { questions, type Question } from "@/data/questions";
+import { getWeakQuestionIds, recordResponses } from "@/lib/attempts";
 import { Target, Info } from "lucide-react";
 
-function getWeakQuestions() {
-  if (typeof window === "undefined") return getRandomQuestions(10);
-  try {
-    const raw = localStorage.getItem("liuk_weak_ids");
-    if (!raw) return getRandomQuestions(10);
-    const weakIds: number[] = JSON.parse(raw);
-    const weak = questions.filter((q) => weakIds.includes(q.id));
-    return weak.length >= 5 ? weak : getRandomQuestions(10);
-  } catch {
-    return getRandomQuestions(10);
-  }
-}
-
 export default function WeakAreasPage() {
-  // Picked on the client only: the static HTML can't know localStorage or match Math.random.
-  const [weakQuestions, setWeakQuestions] = useState<ReturnType<typeof getWeakQuestions> | null>(null);
-  useEffect(() => setWeakQuestions(getWeakQuestions()), []);
+  // Loaded on the client only: the static HTML can't know the user's history.
+  const [weakQuestions, setWeakQuestions] = useState<Question[] | null>(null);
   const [result, setResult] = useState<QuizResult | null>(null);
   const [key, setKey] = useState(0);
 
+  useEffect(() => {
+    getWeakQuestionIds().then((ids) => {
+      const byId = new Map(questions.map((q) => [q.id, q]));
+      setWeakQuestions(ids.map((id) => byId.get(id)).filter((q): q is Question => !!q));
+    });
+  }, [key]);
+
+  const handleComplete = async (r: QuizResult) => {
+    // Correct answers here take questions off the weak list.
+    await recordResponses(r, null);
+    setResult(r);
+  };
+
   const handleRetry = () => {
     setResult(null);
+    setWeakQuestions(null);
     setKey((k) => k + 1);
   };
 
@@ -41,30 +43,47 @@ export default function WeakAreasPage() {
           <div>
             <h1 className="text-xl font-bold">Weak Areas</h1>
             <p className="text-sm text-muted-foreground mt-0.5">
-              {weakQuestions?.length ?? 10} questions you have struggled with most
+              {weakQuestions?.length
+                ? `${weakQuestions.length} question${weakQuestions.length === 1 ? "" : "s"} you got wrong last time`
+                : "Questions you got wrong, until you get them right"}
             </p>
           </div>
         </div>
 
-        {!result && (
-          <div className="mb-6 flex items-start gap-2 text-sm text-muted-foreground bg-muted/40 rounded-lg p-3">
-            <Info className="h-4 w-4 shrink-0 mt-0.5" />
-            <span>
-              Weak areas are tracked as you complete tests. Sign in to persist your data across
-              devices — currently using browser storage only.
-            </span>
-          </div>
-        )}
-
         {result ? (
           <ResultsScreen result={result} onRetry={handleRetry} />
-        ) : weakQuestions && (
-          <QuizEngine
-            key={key}
-            questions={weakQuestions}
-            mode="study"
-            onComplete={setResult}
-          />
+        ) : weakQuestions === null ? (
+          <div className="flex items-center justify-center py-24">
+            <div className="h-8 w-8 rounded-full border-2 border-primary border-t-transparent animate-spin" />
+          </div>
+        ) : weakQuestions.length === 0 ? (
+          <div className="rounded-2xl border-2 border-border bg-card p-8 text-center card-elevated">
+            <div className="text-5xl mb-4">🎯</div>
+            <h2 className="font-heading text-lg font-black mb-2">No weak areas right now</h2>
+            <p className="text-sm text-muted-foreground font-semibold mb-6">
+              Every question you get wrong in a test, exam or quiz lands here so you can drill it.
+              Get it right and it drops off the list.
+            </p>
+            <Link
+              href="/tests"
+              className="btn-3d inline-flex px-5 py-3 rounded-2xl bg-primary text-white text-sm font-extrabold uppercase tracking-wide"
+            >
+              Take a test
+            </Link>
+          </div>
+        ) : (
+          <>
+            <div className="mb-6 flex items-start gap-2 text-sm text-muted-foreground bg-muted/40 rounded-lg p-3">
+              <Info className="h-4 w-4 shrink-0 mt-0.5" />
+              <span>Most-missed questions come first. Answer one correctly and it leaves this list.</span>
+            </div>
+            <QuizEngine
+              key={key}
+              questions={weakQuestions}
+              mode="study"
+              onComplete={handleComplete}
+            />
+          </>
         )}
       </main>
     </div>

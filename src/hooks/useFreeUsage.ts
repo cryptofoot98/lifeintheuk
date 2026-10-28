@@ -72,7 +72,7 @@ export function useFreeUsage(): FreeUsageData {
       ]);
 
       const attempts = attemptsRes.data ?? [];
-      const testsUsed   = attempts.filter(a => a.test_number >= 1 && a.test_number <= 40).length;
+      const testsUsed   = attempts.filter(a => a.test_number >= 1 && a.test_number <= 100).length;
       const examsUsed   = attempts.filter(a => a.test_number > 100).length;
       const quizzesUsed = attempts.filter(a => a.test_number === 0).length;
       const chaptersUsed = new Set((chaptersRes.data ?? []).map(c => c.chapter)).size;

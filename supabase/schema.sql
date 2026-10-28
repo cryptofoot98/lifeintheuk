@@ -122,7 +122,7 @@ create policy "Users can manage own material progress"
 -- ─── QUESTION RESPONSES ───────────────────────────────────────────────────────
 create table if not exists public.question_responses (
   id uuid default uuid_generate_v4() primary key,
-  attempt_id uuid references public.test_attempts(id) on delete cascade not null,
+  attempt_id uuid references public.test_attempts(id) on delete cascade, -- null = weak-area drill
   user_id uuid references public.profiles(id) on delete cascade not null,
   question_id integer not null,
   selected_answers integer[] not null default '{}',
