@@ -8,11 +8,6 @@ web (Netlify), iOS and Android (Capacitor). Everything server-side lives in Supa
 1. `npm install`
 2. `cp .env.example .env.local` and fill in the anon/publishable key
 3. Database: run `supabase/schema.sql` once in the Supabase SQL Editor
-4. AI tutor (optional):
-   ```bash
-   supabase functions deploy ai --project-ref mlcgcsdwipocjcndkjjq
-   supabase secrets set OPENAI_API_KEY=sk-... --project-ref mlcgcsdwipocjcndkjjq
-   ```
 
 ## Develop
 

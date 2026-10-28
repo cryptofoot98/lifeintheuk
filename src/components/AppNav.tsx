@@ -8,7 +8,6 @@ import { Sun, Moon, Bell, Search, LogOut } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useEffect, useState, useRef } from "react";
 import { motion, useMotionValue, useTransform } from "framer-motion";
-import { AiFab } from "@/components/AiFab";
 import { SearchModal } from "@/components/SearchModal";
 import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
@@ -376,8 +375,6 @@ export function AppNav() {
         style={{ height: `calc(env(safe-area-inset-top) + ${8 + 56 + (hasStats ? 52 : 0)}px)` }}
       />
 
-      {/* AI FAB */}
-      <AiFab />
 
       {/* Search modal */}
       <SearchModal open={searchOpen} onClose={() => setSearchOpen(false)} />

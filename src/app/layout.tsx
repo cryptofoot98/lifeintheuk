@@ -1,7 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Nunito } from "next/font/google";
 import { ThemeProvider } from "@/components/ThemeProvider";
-import { AiProvider } from "@/lib/ai-context";
 import { NativeShell } from "@/components/NativeShell";
 import "./globals.css";
 
@@ -45,7 +44,7 @@ export default function RootLayout({
       <body className="min-h-screen bg-background text-foreground antialiased">
         <ThemeProvider>
           <NativeShell />
-          <AiProvider>{children}</AiProvider>
+          {children}
         </ThemeProvider>
       </body>
     </html>
