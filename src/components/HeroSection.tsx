@@ -6,7 +6,7 @@ import Link from "next/link";
 import { ArrowRight, CheckCircle } from "lucide-react";
 import { useState, useCallback } from "react";
 
-const CDN = "https://images.cryptofoot98.me/britzen";
+const CDN = "/brand";
 
 const ORBIT = [
   { src: `${CDN}/icon_royalguard.png`,    a: -90, r: 220, s: 64, d: 18 },

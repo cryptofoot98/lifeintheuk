@@ -4,7 +4,7 @@ import { examSets } from "@/data/exams";
 
 export default function ExamsPage() {
   return (
-    <div className="flex flex-col min-h-screen pb-20 md:pb-0">
+    <div className="flex flex-col min-h-screen pb-[calc(5rem+env(safe-area-inset-bottom))] md:pb-0">
       <AppNav />
       <main className="flex-1 mx-auto max-w-4xl w-full px-4 py-6">
 

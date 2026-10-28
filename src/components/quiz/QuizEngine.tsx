@@ -6,6 +6,7 @@ import type { TestMode } from "@/types";
 import { cn } from "@/lib/utils";
 import { ChevronLeft, Clock, Flame, Flag, Sparkles, Lightbulb } from "lucide-react";
 import { useAI } from "@/lib/ai-context";
+import { tap } from "@/lib/native";
 
 type AnswerState = { selected: number[]; submitted: boolean };
 
@@ -169,6 +170,7 @@ export function QuizEngine({ questions: rawQuestions, mode, timeLimitSeconds = 4
 
   const toggleOption = (idx: number) => {
     if (ans.submitted) return;
+    tap();
     setAnswers((prev) => {
       const updated = [...prev];
       const sel = updated[current].selected;

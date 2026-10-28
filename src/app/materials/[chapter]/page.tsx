@@ -27,7 +27,7 @@ export default async function ChapterPage({ params }: Props) {
   const next = getChapter(ch.chapter + 1);
 
   return (
-    <div className="flex flex-col min-h-screen pb-20 md:pb-0">
+    <div className="flex flex-col min-h-screen pb-[calc(5rem+env(safe-area-inset-bottom))] md:pb-0">
       <AppNav />
       <main className="flex-1 max-w-3xl mx-auto w-full px-4 py-6">
       {/* Back breadcrumb */}

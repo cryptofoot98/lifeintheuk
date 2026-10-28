@@ -1,36 +1,30 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Britzen — Life in the UK test prep
 
-## Getting Started
+One Next.js codebase, exported as a static site and shipped three ways:
+web (Netlify), iOS and Android (Capacitor). Everything server-side lives in Supabase.
 
-First, run the development server:
+## Setup
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+1. `npm install`
+2. `cp .env.example .env.local` and fill in the anon/publishable key
+3. Database: run `supabase/schema.sql` once in the Supabase SQL Editor
+4. AI tutor (optional):
+   ```bash
+   supabase functions deploy ai --project-ref mlcgcsdwipocjcndkjjq
+   supabase secrets set OPENAI_API_KEY=sk-... --project-ref mlcgcsdwipocjcndkjjq
+   ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Develop
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- Web: `npm run dev` → http://localhost:3000
+- iOS: `npm run ios` (builds, syncs, opens Xcode)
+- Android: `npm run android` (builds, syncs, opens Android Studio)
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+After any web change, `npm run build:mobile` rebuilds `out/` and copies it into both native projects.
 
-## Learn More
+## Notes
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- `output: "export"` — no API routes, middleware or server-only APIs. Use Supabase (RLS, edge functions) instead.
+- Native-only behaviour (status bar, back button, splash, external links) is in `src/components/NativeShell.tsx`.
+- Icons/splash are generated from `assets/` with `npx capacitor-assets generate`.
+- Lifetime access (`profiles.has_lifetime_access`) can only be changed with the service role, never by the client.

@@ -14,7 +14,7 @@ import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
 import { getLevelForXP, getProgressToNextLevel } from "@/lib/levels";
 
-const CDN = "https://images.cryptofoot98.me/britzen";
+const CDN = "/brand";
 
 // Goals row collapses over the first 70px of scroll
 const COLLAPSE_AT = 70;
@@ -41,7 +41,8 @@ type UserStats = {
 };
 
 export function AppNav() {
-  const pathname = usePathname();
+  // trailingSlash export → "/profile/"; normalise so active-tab checks match
+  const pathname = (usePathname() ?? "/").replace(/(.)\/$/, "$1");
   const router = useRouter();
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
@@ -162,7 +163,7 @@ export function AppNav() {
   return (
     <>
       {/* ── Floating header ───────────────────────────────────────────────── */}
-      <header className="fixed top-0 left-0 right-0 z-50 px-3 pt-2">
+      <header className="fixed top-0 left-0 right-0 z-50 px-3 pt-[calc(env(safe-area-inset-top)+0.5rem)]">
         <div
           className="mx-auto max-w-5xl bg-card border-2 border-border rounded-2xl"
           style={{ boxShadow: "0 4px 20px oklch(0 0 0 / 10%), 0 1px 4px oklch(0 0 0 / 6%)" }}
@@ -367,12 +368,12 @@ export function AppNav() {
       {/* Desktop: pt-2(8) + Row1(56) + GoalsRow(52 when loaded) + NavRow(52 when visible) */}
       <div
         className="hidden md:block transition-all duration-300"
-        style={{ height: 8 + 56 + (hasStats ? 52 : 0) + (navRowVisible ? 52 : 0) }}
+        style={{ height: `calc(env(safe-area-inset-top) + ${8 + 56 + (hasStats ? 52 : 0) + (navRowVisible ? 52 : 0)}px)` }}
       />
       {/* Mobile: pt-2(8) + Row1(56) + GoalsRow(52 when loaded) */}
       <div
         className="md:hidden transition-all duration-300"
-        style={{ height: 8 + 56 + (hasStats ? 52 : 0) }}
+        style={{ height: `calc(env(safe-area-inset-top) + ${8 + 56 + (hasStats ? 52 : 0)}px)` }}
       />
 
       {/* AI FAB */}
@@ -382,7 +383,7 @@ export function AppNav() {
       <SearchModal open={searchOpen} onClose={() => setSearchOpen(false)} />
 
       {/* ── Floating tab bar (mobile only) ────────────────────────────────── */}
-      <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 px-3 pb-3">
+      <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 px-3 pb-[calc(env(safe-area-inset-bottom)+0.75rem)]">
         <div
           className="bg-card border-2 border-border rounded-2xl overflow-hidden"
           style={{ boxShadow: "0 -2px 20px oklch(0 0 0 / 10%), 0 8px 24px oklch(0 0 0 / 12%)" }}
@@ -435,8 +436,6 @@ export function AppNav() {
               );
             })()}
           </div>
-          {/* iOS safe area */}
-          <div style={{ height: "env(safe-area-inset-bottom)" }} />
         </div>
       </nav>
     </>

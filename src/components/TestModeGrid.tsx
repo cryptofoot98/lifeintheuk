@@ -6,7 +6,7 @@ import { FreeBadge } from "@/components/FreeBadge";
 import { FullPracticeCard } from "@/components/FullPracticeCard";
 import { useFreeUsage } from "@/hooks/useFreeUsage";
 
-const CDN = "https://images.cryptofoot98.me/britzen";
+const CDN = "/brand";
 
 export function TestModeGrid() {
   const usage = useFreeUsage();

@@ -5,7 +5,7 @@ import { FadeIn } from "@/components/FadeIn";
 import { HeroSection } from "@/components/HeroSection";
 import { CheckCircle, ArrowRight, Star, Lock } from "lucide-react";
 
-const CDN = "https://images.cryptofoot98.me/britzen";
+const CDN = "/brand";
 
 const features = [
   {
@@ -134,9 +134,15 @@ function Wave({
   );
 }
 
+// Inside the native app, Capacitor serves this root index.html for ANY
+// extensionless URL (e.g. after the WebView reloads on /tests/1/). If that
+// happens, bounce to "/" and let NativeShell route back client-side.
+const nativeDeepLinkGuard = `if(location.pathname!=="/"&&window.Capacitor&&window.Capacitor.isNativePlatform())location.replace("/?to="+encodeURIComponent(location.pathname+location.search))`;
+
 export default function HomePage() {
   return (
     <div className="flex flex-col min-h-screen overflow-hidden">
+      <script dangerouslySetInnerHTML={{ __html: nativeDeepLinkGuard }} />
       <Nav />
 
       {/* ── Hero ───────────────────────────────────────────────────────────── */}

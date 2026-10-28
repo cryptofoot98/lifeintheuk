@@ -37,7 +37,7 @@ export default function ProgressPage() {
 
   if (loading) {
     return (
-      <div className="flex flex-col min-h-screen pb-20 md:pb-0">
+      <div className="flex flex-col min-h-screen pb-[calc(5rem+env(safe-area-inset-bottom))] md:pb-0">
         <AppNav />
         <div className="flex-1 flex items-center justify-center py-24">
           <div className="h-8 w-8 rounded-full border-2 border-primary border-t-transparent animate-spin" />
@@ -47,7 +47,7 @@ export default function ProgressPage() {
   }
 
   return (
-    <div className="flex flex-col min-h-screen pb-20 md:pb-0">
+    <div className="flex flex-col min-h-screen pb-[calc(5rem+env(safe-area-inset-bottom))] md:pb-0">
       <AppNav />
       <main className="flex-1 mx-auto max-w-4xl w-full px-4 py-6">
 

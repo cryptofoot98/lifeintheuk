@@ -6,7 +6,7 @@ import { useTheme } from "next-themes";
 import { Sun, Moon } from "lucide-react";
 import { useEffect, useState } from "react";
 
-const CDN = "https://images.cryptofoot98.me/britzen";
+const CDN = "/brand";
 
 export function Nav() {
   const { theme, setTheme } = useTheme();
@@ -15,7 +15,7 @@ export function Nav() {
   useEffect(() => { setMounted(true); }, []);
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 px-3 pt-2">
+    <header className="fixed top-0 left-0 right-0 z-50 px-3 pt-[calc(env(safe-area-inset-top)+0.5rem)]">
       <div
         className="mx-auto max-w-5xl bg-card/90 backdrop-blur-md border-2 border-border rounded-2xl overflow-hidden"
         style={{ boxShadow: "0 4px 20px oklch(0 0 0 / 10%), 0 1px 4px oklch(0 0 0 / 6%)" }}

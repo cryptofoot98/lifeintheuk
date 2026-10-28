@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import { useAI, type AiTrigger } from "@/lib/ai-context";
 import { X, Send, Sparkles, Loader2, Bot, Lightbulb, GraduationCap, MessageCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { createClient } from "@/lib/supabase/client";
 
 type Message = { role: "user" | "assistant"; content: string };
 
@@ -78,12 +79,20 @@ export function AiFab() {
     setStreaming(true);
 
     try {
-      const res = await fetch("/api/ai", {
+      const { data: { session } } = await createClient().auth.getSession();
+      if (!session) throw new Error("signed-out");
+
+      const res = await fetch(`${process.env.NEXT_PUBLIC_SUPABASE_URL}/functions/v1/ai`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          apikey: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+          Authorization: `Bearer ${session.access_token}`,
+        },
         body: JSON.stringify({ mode: trigger?.mode ?? "general", context: trigger ?? {}, messages: history }),
       });
 
+      if (res.status === 401) throw new Error("signed-out");
       if (!res.ok || !res.body) throw new Error("Request failed");
 
       const reader = res.body.getReader();
@@ -99,10 +108,13 @@ export function AiFab() {
           return next;
         });
       }
-    } catch {
+    } catch (err) {
+      const content = err instanceof Error && err.message === "signed-out"
+        ? "Please sign in to chat with the AI tutor."
+        : "Sorry, something went wrong. Please try again.";
       setMessages((prev) => {
         const next = [...prev];
-        next[next.length - 1] = { ...next[next.length - 1], content: "Sorry, something went wrong. Please try again." };
+        next[next.length - 1] = { ...next[next.length - 1], content };
         return next;
       });
     }
@@ -114,7 +126,7 @@ export function AiFab() {
     return (
       <button
         onClick={() => openAI("general")}
-        className="fixed z-50 bottom-24 right-4 md:bottom-6 md:right-6 btn-3d h-14 w-14 rounded-full bg-secondary text-white flex items-center justify-center shadow-lg shadow-secondary/30 transition-all hover:scale-105"
+        className="fixed z-50 bottom-[calc(6rem+env(safe-area-inset-bottom))] right-4 md:bottom-6 md:right-6 btn-3d h-14 w-14 rounded-full bg-secondary text-white flex items-center justify-center shadow-lg shadow-secondary/30 transition-all hover:scale-105"
         aria-label="Open AI tutor"
       >
         <Sparkles className="h-6 w-6" />
@@ -138,7 +150,7 @@ export function AiFab() {
         className={cn(
           "fixed z-50 flex flex-col transition-all duration-300",
           // Mobile: full-width sheet from bottom
-          "inset-x-0 bottom-0 rounded-t-3xl",
+          "inset-x-0 bottom-0 rounded-t-3xl pb-[env(safe-area-inset-bottom)]",
           // Desktop: floating panel above FAB
           "md:inset-x-auto md:bottom-20 md:right-6 md:w-[390px] md:rounded-2xl",
           // Height

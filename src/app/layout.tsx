@@ -1,7 +1,8 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Nunito } from "next/font/google";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { AiProvider } from "@/lib/ai-context";
+import { NativeShell } from "@/components/NativeShell";
 import "./globals.css";
 
 const nunito = Nunito({
@@ -23,6 +24,15 @@ export const metadata: Metadata = {
   description:
     "The most beautiful way to prepare for your British citizenship test. 105+ questions, weak-area tracking, and a progress dashboard that keeps you on track.",
   keywords: ["Life in the UK", "citizenship test", "British citizenship", "practice test", "Britzen"],
+  manifest: "/manifest.webmanifest",
+};
+
+// viewport-fit=cover lets content sit under the notch / home indicator;
+// components pad themselves with env(safe-area-inset-*).
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
 };
 
 export default function RootLayout({
@@ -34,6 +44,7 @@ export default function RootLayout({
     <html lang="en" className={`${nunito.variable} ${nunitoBody.variable}`} suppressHydrationWarning>
       <body className="min-h-screen bg-background text-foreground antialiased">
         <ThemeProvider>
+          <NativeShell />
           <AiProvider>{children}</AiProvider>
         </ThemeProvider>
       </body>

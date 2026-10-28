@@ -4,7 +4,7 @@ import { BookOpen, Clock, ArrowRight } from "lucide-react";
 import { CHAPTERS } from "@/data/materials";
 import { AppNav } from "@/components/AppNav";
 
-const CDN = "https://images.cryptofoot98.me/britzen";
+const CDN = "/brand";
 const CHAPTER_ICONS: Record<number, string> = {
   1: `${CDN}/icon_unionjack.png`,
   2: `${CDN}/icon_wales.png`,
@@ -17,7 +17,7 @@ export const metadata = { title: "Study Materials | Life in the UK" };
 
 export default function MaterialsPage() {
   return (
-    <div className="flex flex-col min-h-screen pb-20 md:pb-0">
+    <div className="flex flex-col min-h-screen pb-[calc(5rem+env(safe-area-inset-bottom))] md:pb-0">
       <AppNav />
       <main className="flex-1 max-w-2xl mx-auto w-full px-4 py-8">
       {/* Header */}

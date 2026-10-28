@@ -6,7 +6,7 @@ import { useState } from "react";
 import { ArrowRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-const CDN = "https://images.cryptofoot98.me/britzen";
+const CDN = "/brand";
 import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
 
