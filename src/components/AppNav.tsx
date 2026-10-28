@@ -173,10 +173,10 @@ export function AppNav() {
             {/* Logo */}
             <Link href="/tests" className="flex items-center gap-2 shrink-0 group mr-1">
               <div className="h-8 w-8 group-hover:scale-105 transition-transform shrink-0">
-                <Image src={`${CDN}/logo_britzen.png`} alt="Britzen" width={32} height={32} className="w-8 h-8 drop-shadow-sm" />
+                <Image src={`${CDN}/logo_britzen.png`} alt="Magpie" width={32} height={32} className="w-8 h-8 drop-shadow-sm" />
               </div>
               <span className="font-heading font-extrabold text-sm tracking-tight hidden sm:inline">
-                Britzen
+                Magpie
               </span>
             </Link>
 

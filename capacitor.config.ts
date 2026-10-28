@@ -2,7 +2,7 @@ import type { CapacitorConfig } from "@capacitor/cli";
 
 const config: CapacitorConfig = {
   appId: "com.britzen.app",
-  appName: "Britzen",
+  appName: "Magpie",
   webDir: "out",
   server: {
     androidScheme: "https",

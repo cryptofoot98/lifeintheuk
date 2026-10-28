@@ -382,7 +382,7 @@ export default function HomePage() {
               Study anywhere
             </h2>
             <p className="text-muted-foreground mb-8 max-w-md mx-auto font-medium">
-              Britzen is coming to iOS and Android. Study on the bus, on your lunch break — keep your streak alive wherever you are.
+              Magpie is coming to iOS and Android. Study on the bus, on your lunch break — keep your streak alive wherever you are.
             </p>
             <div className="flex items-center justify-center gap-4 flex-wrap">
               {/* Apple App Store badge */}
@@ -461,7 +461,7 @@ export default function HomePage() {
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[300px] bg-primary/8 rounded-full blur-3xl" />
         <FadeIn>
           <div className="relative z-10 text-center max-w-2xl mx-auto">
-            <Image src={`${CDN}/logo_britzen.png`} alt="Britzen" width={96} height={96} className="mx-auto mb-6 drop-shadow-2xl" />
+            <Image src={`${CDN}/logo_britzen.png`} alt="Magpie" width={96} height={96} className="mx-auto mb-6 drop-shadow-2xl" />
             <h2 className="font-heading text-4xl sm:text-5xl font-black mb-4">
               Your citizenship is worth
               <br />
@@ -491,8 +491,8 @@ export default function HomePage() {
       <footer className="py-8 px-4 bg-card">
         <div className="mx-auto max-w-6xl flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-muted-foreground font-semibold">
           <div className="flex items-center gap-2">
-            <Image src={`${CDN}/logo_britzen.png`} alt="Britzen" width={20} height={20} className="w-5 h-5 shrink-0" />
-            <span className="font-extrabold text-foreground">Britzen</span>
+            <Image src={`${CDN}/logo_britzen.png`} alt="Magpie" width={20} height={20} className="w-5 h-5 shrink-0" />
+            <span className="font-extrabold text-foreground">Magpie</span>
           </div>
           <p className="text-center">
             Based on <em>Life in the United Kingdom: A Guide for New Residents, 3rd edition</em>. Unofficial practice site.

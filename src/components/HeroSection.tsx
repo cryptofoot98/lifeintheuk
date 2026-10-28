@@ -129,7 +129,7 @@ export function HeroSection() {
             <div className="absolute inset-0 rounded-full bg-primary/20 blur-3xl scale-[1.9] opacity-0 group-hover:opacity-100 transition-opacity duration-400 pointer-events-none" />
             <Image
               src={`${CDN}/logo_britzen.png`}
-              alt="Britzen"
+              alt="Magpie"
               width={240}
               height={240}
               className="relative drop-shadow-2xl"
@@ -146,7 +146,7 @@ export function HeroSection() {
         transition={{ delay: 0.08, duration: 0.55 }}
         className="font-heading text-5xl sm:text-6xl lg:text-7xl font-black tracking-[0.18em] uppercase text-center mb-3"
       >
-        BRITZEN
+        MAGPIE
       </motion.h1>
 
       {/* Tagline */}

@@ -16,7 +16,7 @@ const REASON_COPY: Record<string, { headline: string; sub: string }> = {
   exams:    { headline: "You've used your free real exam set",     sub: "Access all 10 reported exam sets, same format as the real thing." },
   quiz:     { headline: "You've used your free quick quiz",        sub: "Unlimited quick quizzes come with the lifetime unlock." },
   chapters: { headline: "You've read your free chapter",           sub: "All 5 handbook chapters are included in the lifetime unlock." },
-  general:  { headline: "Unlock the full Britzen experience",      sub: "Everything you need to pass — one small payment, forever." },
+  general:  { headline: "Unlock the full Magpie experience",      sub: "Everything you need to pass — one small payment, forever." },
 };
 
 const FEATURES = [

@@ -40,9 +40,9 @@ export default function LoginPage() {
         <div className="text-center mb-8">
           <Link href="/" className="inline-flex flex-col items-center gap-2">
             <div className="h-14 w-14 flex items-center justify-center">
-              <Image src={`${CDN}/logo_britzen.png`} alt="Britzen" width={56} height={56} className="drop-shadow-xl" />
+              <Image src={`${CDN}/logo_britzen.png`} alt="Magpie" width={56} height={56} className="drop-shadow-xl" />
             </div>
-            <span className="font-heading font-black text-base">Britzen</span>
+            <span className="font-heading font-black text-base">Magpie</span>
           </Link>
           <h1 className="font-heading text-2xl font-black mt-4 mb-1">Welcome back!</h1>
           <p className="text-muted-foreground text-sm font-semibold">Sign in to continue your preparation</p>

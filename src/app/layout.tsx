@@ -20,10 +20,10 @@ const nunitoBody = Nunito({
 });
 
 export const metadata: Metadata = {
-  title: "Britzen — Pass Your Life in the UK Test First Time",
+  title: "Magpie — Pass Your Life in the UK Test First Time",
   description:
     "The most beautiful way to prepare for your British citizenship test. 105+ questions, weak-area tracking, and a progress dashboard that keeps you on track.",
-  keywords: ["Life in the UK", "citizenship test", "British citizenship", "practice test", "Britzen"],
+  keywords: ["Life in the UK", "citizenship test", "British citizenship", "practice test", "Magpie"],
   manifest: "/manifest.webmanifest",
 };
 

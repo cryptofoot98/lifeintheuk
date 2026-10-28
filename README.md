@@ -1,4 +1,4 @@
-# Britzen — Life in the UK test prep
+# Magpie — Life in the UK test prep
 
 One Next.js codebase, exported as a static site and shipped three ways:
 web (Netlify), iOS and Android (Capacitor). Everything server-side lives in Supabase.
