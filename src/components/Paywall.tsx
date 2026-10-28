@@ -21,7 +21,7 @@ export function Paywall({ reason = "trial-used" }: Props) {
         <p className="text-muted-foreground font-semibold mb-7 leading-relaxed text-sm">
           {isGuest
             ? "Sign up free and get 2 practice tests, 1 real exam, and 1 study chapter. Unlock everything for £8.90 — one-time, forever."
-            : "You've used your free allowance. Unlock all 40 tests, all 10 exam sets, study mode, and your progress dashboard for a one-time payment of £8.90."}
+            : "You've used your free allowance. Unlock all 100 tests, all 20 exam sets, study mode, and your progress dashboard for a one-time payment of £8.90."}
         </p>
 
         {/* Pricing card */}
@@ -36,7 +36,7 @@ export function Paywall({ reason = "trial-used" }: Props) {
           </div>
           <ul className="flex flex-col gap-2">
             {[
-              "All 40 practice tests",
+              "All 100 practice tests",
               "Chapter study mode",
               "Weak-area drill sessions",
               "Progress dashboard",

@@ -6,6 +6,7 @@ import { ResultsScreen } from "@/components/quiz/ResultsScreen";
 import { Paywall } from "@/components/Paywall";
 import type { Question } from "@/data/questions";
 import { createClient } from "@/lib/supabase/client";
+import { saveAttempt } from "@/lib/attempts";
 
 // Exam attempts are stored with testNumber = 100 + examId (101-110)
 // so they don't collide with regular practice tests (1-40).
@@ -56,61 +57,9 @@ export function ExamClient({ questions, examId, title }: Props) {
   }
 
   const handleComplete = async (r: QuizResult) => {
+    // Save before showing results so ResultsScreen reads the updated XP.
+    await saveAttempt(100 + examId, "timed", r);
     setResult(r);
-    const testNumber = 100 + examId;
-    const supabase = createClient();
-    const { data: { user } } = await supabase.auth.getUser();
-
-    if (user) {
-      const { data: profile } = await supabase
-        .from("profiles")
-        .select("has_lifetime_access, free_tests_used, xp, streak, last_activity_date")
-        .eq("id", user.id)
-        .single();
-
-      if (profile) {
-        await supabase.from("test_attempts").insert({
-          user_id: user.id,
-          test_number: testNumber,
-          mode: "timed",
-          score: r.score,
-          total_questions: r.questions.length,
-          time_taken_seconds: r.timeTaken,
-          completed_at: new Date().toISOString(),
-        });
-
-        const earnedXP = r.score * 10;
-        const today = new Date().toISOString().split("T")[0];
-        const yesterday = new Date(Date.now() - 86400000).toISOString().split("T")[0];
-        const profileUpdates: Record<string, unknown> = {
-          xp: (profile.xp ?? 0) + earnedXP,
-          last_activity_date: today,
-        };
-        if (profile.last_activity_date === yesterday) {
-          profileUpdates.streak = (profile.streak ?? 0) + 1;
-        } else if (profile.last_activity_date !== today) {
-          profileUpdates.streak = 1;
-        }
-        if (!profile.has_lifetime_access) {
-          profileUpdates.free_tests_used = profile.free_tests_used + 1;
-        }
-        await supabase.from("profiles").update(profileUpdates).eq("id", user.id);
-      }
-    }
-
-    try {
-      const attempts = JSON.parse(localStorage.getItem("liuk_attempts") || "[]");
-      attempts.push({
-        testNumber,
-        score: r.score,
-        total: r.questions.length,
-        percent: Math.round((r.score / r.questions.length) * 100),
-        passed: r.score / r.questions.length >= 0.75,
-        timeTaken: r.timeTaken,
-        completedAt: new Date().toISOString(),
-      });
-      localStorage.setItem("liuk_attempts", JSON.stringify(attempts));
-    } catch { /* ignore */ }
   };
 
   const handleRetry = () => { setResult(null); setKey((k) => k + 1); };

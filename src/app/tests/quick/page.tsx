@@ -7,6 +7,7 @@ import { ResultsScreen } from "@/components/quiz/ResultsScreen";
 import { Paywall } from "@/components/Paywall";
 import { getRandomQuestions } from "@/data/questions";
 import { createClient } from "@/lib/supabase/client";
+import { saveAttempt } from "@/lib/attempts";
 
 type AccessState = "loading" | "allowed" | "needs-unlock";
 
@@ -47,6 +48,11 @@ export default function QuickQuizPage() {
     checkAccess();
   }, []);
 
+  const handleComplete = async (r: QuizResult) => {
+    await saveAttempt(0, "untimed", r);
+    setResult(r);
+  };
+
   const handleRetry = () => {
     setResult(null);
     setKey((k) => k + 1);
@@ -81,7 +87,7 @@ export default function QuickQuizPage() {
               key={key}
               questions={questions}
               mode="untimed"
-              onComplete={setResult}
+              onComplete={handleComplete}
               sessionKey="quick"
             />
           </>

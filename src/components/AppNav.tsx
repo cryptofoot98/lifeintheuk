@@ -205,7 +205,7 @@ export function AppNav() {
                   {!notifRead && <span className="absolute top-1.5 right-1.5 h-2 w-2 rounded-full bg-primary" />}
                 </button>
                 {notifOpen && (
-                  <div className="absolute right-0 top-11 z-[60] w-72 bg-card border-2 border-border rounded-2xl shadow-xl shadow-black/12 flex flex-col overflow-hidden">
+                  <div className="fixed left-3 right-3 top-[calc(env(safe-area-inset-top)+4.5rem)] sm:absolute sm:left-auto sm:right-0 sm:top-11 sm:w-80 z-[60] max-h-[70vh] overflow-y-auto bg-card border-2 border-border rounded-2xl shadow-xl shadow-black/12 flex flex-col overflow-hidden">
                     <div className="px-4 py-3 border-b border-border/60">
                       <span className="text-xs font-extrabold text-muted-foreground uppercase tracking-widest">Notifications</span>
                     </div>

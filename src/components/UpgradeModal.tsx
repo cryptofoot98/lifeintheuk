@@ -12,7 +12,7 @@ type Props = {
 };
 
 const REASON_COPY: Record<string, { headline: string; sub: string }> = {
-  tests:    { headline: "You've used your 2 free practice tests", sub: "Unlock all 40 tests and keep your momentum going." },
+  tests:    { headline: "You've used your 2 free practice tests", sub: "Unlock all 100 tests and keep your momentum going." },
   exams:    { headline: "You've used your free real exam set",     sub: "Access all 10 reported exam sets, same format as the real thing." },
   quiz:     { headline: "You've used your free quick quiz",        sub: "Unlimited quick quizzes come with the lifetime unlock." },
   chapters: { headline: "You've read your free chapter",           sub: "All 5 handbook chapters are included in the lifetime unlock." },
@@ -20,7 +20,7 @@ const REASON_COPY: Record<string, { headline: string; sub: string }> = {
 };
 
 const FEATURES = [
-  "All 40 practice tests",
+  "All 100 practice tests",
   "All 10 real exam question sets",
   "Unlimited quick quizzes",
   "All 5 study material chapters",

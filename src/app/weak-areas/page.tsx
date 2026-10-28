@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { AppNav } from "@/components/AppNav";
 import { QuizEngine, type QuizResult } from "@/components/quiz/QuizEngine";
 import { ResultsScreen } from "@/components/quiz/ResultsScreen";
@@ -21,7 +21,9 @@ function getWeakQuestions() {
 }
 
 export default function WeakAreasPage() {
-  const [weakQuestions] = useState(() => getWeakQuestions());
+  // Picked on the client only: the static HTML can't know localStorage or match Math.random.
+  const [weakQuestions, setWeakQuestions] = useState<ReturnType<typeof getWeakQuestions> | null>(null);
+  useEffect(() => setWeakQuestions(getWeakQuestions()), []);
   const [result, setResult] = useState<QuizResult | null>(null);
   const [key, setKey] = useState(0);
 
@@ -39,7 +41,7 @@ export default function WeakAreasPage() {
           <div>
             <h1 className="text-xl font-bold">Weak Areas</h1>
             <p className="text-sm text-muted-foreground mt-0.5">
-              {weakQuestions.length} questions you have struggled with most
+              {weakQuestions?.length ?? 10} questions you have struggled with most
             </p>
           </div>
         </div>
@@ -56,7 +58,7 @@ export default function WeakAreasPage() {
 
         {result ? (
           <ResultsScreen result={result} onRetry={handleRetry} />
-        ) : (
+        ) : weakQuestions && (
           <QuizEngine
             key={key}
             questions={weakQuestions}
